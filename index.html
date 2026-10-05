@@ -25,7 +25,7 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
 .badge{display:inline-block;padding:3px 7px;border-radius:999px;background:var(--accent2);border:1px solid #ffd3a8;font-size:12px;margin-left:6px}
 .section{margin:20px 0}.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.empty{padding:22px;text-align:center;color:var(--muted)}
 .notice{background:#fff7ed;color:#9a3412;padding:10px 12px;border:1px solid #fed7aa;border-radius:8px;margin-bottom:16px;font-size:13px}
-.dashboard-list{margin-top:18px}.dashboard-list h3{display:flex;justify-content:space-between;align-items:center}.dashboard-item{padding:10px 0;border-bottom:1px solid #eee}.dashboard-item:last-child{border-bottom:0}
+.calendar-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px}.cal-dow{text-align:center;font-size:12px;font-weight:700;color:var(--muted);padding:6px}.cal-day{min-height:120px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px}.cal-day.other{opacity:.35}.cal-day.today{outline:2px solid var(--accent)}.cal-num{font-size:12px;font-weight:700;margin-bottom:5px}.cal-event{display:block;width:100%;border:0;text-align:left;border-radius:5px;padding:5px 6px;margin:4px 0;font-size:11px;cursor:pointer;background:var(--accent2);border-left:3px solid var(--accent)}.cal-event.marketing{background:#eef2ff;border-left-color:#6366f1}.cal-event.sales{background:#ecfdf3;border-left-color:#16a34a}.cal-event.customer{background:#eff6ff;border-left-color:#2563eb}.cal-event.hitlist{background:#fff3e6;border-left-color:var(--accent)}.calendar-list{margin-top:18px}.dashboard-list{margin-top:18px}.dashboard-list h3{display:flex;justify-content:space-between;align-items:center}.dashboard-item{padding:10px 0;border-bottom:1px solid #eee}.dashboard-item:last-child{border-bottom:0}
 @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.row,.row3{grid-template-columns:1fr}header{align-items:flex-start;gap:12px;flex-direction:column}}
 </style>
 </head>
@@ -38,6 +38,7 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
 <button class="tab" data-view="opportunities">Opportunities</button>
 <button class="tab" data-view="marketing">Marketing</button>
 <button class="tab" data-view="hitlist">Hitlist</button>
+<button class="tab" data-view="calendar">Calendar</button>
 </nav>
 </header>
 <main>
@@ -109,6 +110,15 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
 </div>
 </div>
 <div class="section" id="hitlistList"></div>
+</section>
+
+<section id="calendar" class="view">
+<div class="calendar-head"><h2 style="margin:0">Commercial Calendar</h2><div class="actions" style="margin:0"><button class="secondary" onclick="changeCalendarMonth(-1)">← Previous</button><button class="secondary" onclick="calendarToday()">Today</button><button class="secondary" onclick="changeCalendarMonth(1)">Next →</button></div></div>
+<div class="card section">
+<div class="calendar-head"><h3 id="calendarTitle" style="margin:0"></h3><div><span class="badge">Customer</span><span class="badge">Sales</span><span class="badge">Marketing</span><span class="badge">Hitlist</span></div></div>
+<div id="calendarGrid" class="calendar-grid"></div>
+</div>
+<div class="card calendar-list"><h3>Upcoming deadlines</h3><div id="calendarUpcoming"></div></div>
 </section>
 </main>
 <script>
@@ -271,7 +281,43 @@ if(type==="marketing"){title="Marketing ideas";html=db.marketing.length?db.marke
 if(type==="hitlist"){title="Hitlist companies";html=db.hitlist.length?db.hitlist.map(x=>'<div class="dashboard-item"><b>'+esc(x.company)+'</b> <span class="badge">'+esc(x.status||"Not contacted")+'</span><div class="muted">'+esc(x.location||"No location")+' • Contact: '+esc(x.contact||"—")+' • Next: '+esc(x.next||"—")+'</div></div>').join(""):'<div class="empty">No hitlist companies.</div>'}
 dashboardListTitle.textContent=title;dashboardList.innerHTML=html}
 function clearDashboardList(){dashboardListTitle.textContent="Selected items";dashboardList.innerHTML='<div class="empty">Click a dashboard card to show its list here.</div>'}
-function render(){kCustomers.textContent=db.customers.length;kOpps.textContent=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage)).length;kMarketing.textContent=db.marketing.length;kHitlist.textContent=db.hitlist.length;let items=db.opportunities.filter(x=>x.next||x.date).slice(0,5);focusList.innerHTML=items.length?items.map(x=>'<div class="dashboard-item"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.next||x.title)+' <span class="muted">'+esc(x.date||"")+'</span></div>').join(""):'Add actions to build your focus list.';renderCustomers();renderOpps();renderMarketing();renderHitlist()}
+let calendarCursor=new Date(); calendarCursor.setDate(1);
+function calendarEvents(){
+  let events=[];
+  db.customers.forEach(x=>{if(x.follow)events.push({date:x.follow,type:"customer",title:x.name+" follow-up",detail:x.location||"",target:"customers",id:x.id})});
+  db.opportunities.forEach(x=>{if(x.date)events.push({date:x.date,type:"sales",title:(x.customer?x.customer+" — ":"")+x.title,detail:x.next||"Sales next action",target:"opportunities",id:x.id});if(x.start)events.push({date:x.start,type:"sales",title:(x.customer?x.customer+" — ":"")+x.title+" starts",detail:(x.hours?x.hours+" h":"Expected start"),target:"opportunities",id:x.id})});
+  db.marketing.forEach(x=>{if(x.date)events.push({date:x.date,type:"marketing",title:x.idea,detail:x.status||"Marketing deadline",target:"marketing",id:x.id})});
+  db.hitlist.forEach(x=>{if(x.date)events.push({date:x.date,type:"hitlist",title:x.company+" follow-up",detail:x.next||x.status||"Hitlist",target:"hitlist",id:x.id})});
+  return events.sort((a,b)=>a.date.localeCompare(b.date));
+}
+function openCalendarItem(target,id){
+  document.querySelectorAll(".tab,.view").forEach(x=>x.classList.remove("active"));
+  let tab=[...document.querySelectorAll(".tab")].find(b=>b.dataset.view===target);if(tab)tab.classList.add("active");
+  let view=document.getElementById(target);if(view)view.classList.add("active");
+  if(target==="customers"){let filter=document.getElementById("customerLocationFilter");if(filter)filter.value="";renderCustomers();setTimeout(()=>document.getElementById("customer-"+id)?.scrollIntoView({behavior:"smooth",block:"start"}),0)}
+}
+function changeCalendarMonth(n){calendarCursor.setMonth(calendarCursor.getMonth()+n);renderCalendar()}
+function calendarToday(){calendarCursor=new Date();calendarCursor.setDate(1);renderCalendar()}
+function renderCalendar(){
+  if(!document.getElementById("calendarGrid"))return;
+  const y=calendarCursor.getFullYear(),m=calendarCursor.getMonth(),today=new Date(),events=calendarEvents();
+  calendarTitle.textContent=calendarCursor.toLocaleDateString(undefined,{month:"long",year:"numeric"});
+  let first=new Date(y,m,1),offset=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),prevDays=new Date(y,m,0).getDate();
+  let html=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=>'<div class="cal-dow">'+d+'</div>').join("");
+  for(let cell=0;cell<42;cell++){
+    let day=cell-offset+1,cy=y,cm=m,other=false;
+    if(day<1){day=prevDays+day;cm=m-1;other=true;if(cm<0){cm=11;cy--}}
+    else if(day>days){day-=days;cm=m+1;other=true;if(cm>11){cm=0;cy++}}
+    let ds=cy+"-"+String(cm+1).padStart(2,"0")+"-"+String(day).padStart(2,"0");
+    let isToday=ds===today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0");
+    let ev=events.filter(e=>e.date===ds);
+    html+='<div class="cal-day '+(other?'other ':'')+(isToday?'today':'')+'"><div class="cal-num">'+day+'</div>'+ev.map(e=>'<button class="cal-event '+e.type+'" onclick="openCalendarItem(\''+e.target+'\','+e.id+')" title="'+esc(e.detail)+'"><b>'+esc(e.type.toUpperCase())+'</b><br>'+esc(e.title)+'</button>').join("")+'</div>';
+  }
+  calendarGrid.innerHTML=html;
+  let now=new Date();now.setHours(0,0,0,0);let upcoming=events.filter(e=>new Date(e.date+"T00:00:00")>=now).slice(0,15);
+  calendarUpcoming.innerHTML=upcoming.length?upcoming.map(e=>'<div class="dashboard-item"><span class="badge">'+esc(e.type)+'</span> <b>'+esc(e.date)+'</b> — '+esc(e.title)+'<div class="muted">'+esc(e.detail)+'</div></div>').join(""):'<div class="empty">No upcoming deadlines.</div>';
+}
+function render(){kCustomers.textContent=db.customers.length;kOpps.textContent=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage)).length;kMarketing.textContent=db.marketing.length;kHitlist.textContent=db.hitlist.length;let items=db.opportunities.filter(x=>x.next||x.date).slice(0,5);focusList.innerHTML=items.length?items.map(x=>'<div class="dashboard-item"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.next||x.title)+' <span class="muted">'+esc(x.date||"")+'</span></div>').join(""):'Add actions to build your focus list.';renderCustomers();renderOpps();renderMarketing();renderHitlist();renderCalendar()}
 render();
 </script>
 </body>
