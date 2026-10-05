@@ -5,29 +5,29 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sales Hub</title>
 <style>
-:root{--bg:#f5f7fa;--card:#fff;--ink:#17212b;--muted:#667085;--line:#d9e0e7;--accent:#1f6f5f;--accent2:#e9f5f1;--warn:#b54708;--danger:#b42318}
+:root{--bg:#f3f4f6;--card:#ffffff;--ink:#111111;--muted:#6b7280;--line:#d7d9dd;--accent:#9ccf3b;--accent-dark:#74a824;--accent2:#f3f9e8;--charcoal:#171717;--warn:#b54708;--danger:#b42318}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:#111827;color:#fff;padding:20px 26px;display:flex;justify-content:space-between;align-items:center}
-header h1{margin:0;font-size:24px}.sub{color:#cbd5e1;font-size:13px}
-nav{display:flex;gap:8px;flex-wrap:wrap}.tab{border:0;background:#273244;color:#fff;padding:9px 13px;border-radius:8px;cursor:pointer}.tab.active{background:var(--accent)}
+header{background:var(--charcoal);color:#fff;padding:18px 26px;display:flex;justify-content:space-between;align-items:center;border-bottom:4px solid var(--accent)}
+header h1{margin:0;font-size:21px;letter-spacing:.2px}.brand{display:flex;align-items:center;gap:16px}.brand-logo{height:54px;width:auto;display:block;background:#fff;border-radius:6px;padding:4px}.sub{color:#d1d5db;font-size:13px;margin-top:3px}
+nav{display:flex;gap:8px;flex-wrap:wrap}.tab{border:1px solid #3b3b3b;background:#242424;color:#fff;padding:9px 13px;border-radius:7px;cursor:pointer;transition:.15s}.tab:hover{border-color:var(--accent);color:var(--accent)}.tab.active{background:var(--accent);border-color:var(--accent);color:#111;font-weight:700}
 main{max-width:1180px;margin:24px auto;padding:0 18px}.view{display:none}.view.active{display:block}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
-.kpi b{font-size:28px;display:block}.kpi span{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.035)}
+.kpi{border-top:4px solid var(--accent)}.kpi b{font-size:30px;display:block;color:var(--charcoal)}.kpi span{color:var(--muted);font-size:13px}
 h2{margin:0 0 14px}h3{margin:8px 0 12px}.muted{color:var(--muted)}label{font-size:13px;color:var(--muted);display:block;margin-bottom:5px}
 input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:white}textarea{min-height:80px;resize:vertical}
 .row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-button.primary{background:var(--accent);color:white;border:0;border-radius:8px;padding:10px 14px;cursor:pointer}
+button.primary{background:var(--accent);color:#111;border:0;border-radius:7px;padding:10px 14px;cursor:pointer;font-weight:700}button.primary:hover{background:var(--accent-dark)}
 button.secondary{background:white;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer}
-table{width:100%;border-collapse:collapse;background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size:14px}th{background:#f8fafc}
+table{width:100%;border-collapse:collapse;background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size:14px}th{background:#f4f5f6;border-bottom:2px solid var(--accent)}
 .check{border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;background:#fff}.check-head{display:flex;gap:10px;align-items:flex-start}.check-head input{width:auto;margin-top:3px}.how{margin:8px 0 8px 26px;background:var(--accent2);padding:10px;border-radius:8px;font-size:13px}.comment{margin-left:26px}
-.badge{display:inline-block;padding:3px 7px;border-radius:999px;background:#eef2f6;font-size:12px}.section{margin:20px 0}.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.badge{display:inline-block;padding:3px 7px;border-radius:999px;background:var(--accent2);border:1px solid #dcebbd;font-size:12px}.section{margin:20px 0}.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .empty{padding:22px;text-align:center;color:var(--muted)}.notice{background:#fff7ed;color:#9a3412;padding:10px 12px;border:1px solid #fed7aa;border-radius:8px;margin-bottom:16px;font-size:13px}
 @media(max-width:800px){.grid{grid-template-columns:1fr 1fr}.row,.row3{grid-template-columns:1fr}header{align-items:flex-start;gap:12px;flex-direction:column}}
 </style>
 </head>
 <body>
 <header>
-<div><h1>Sales Hub</h1><div class="sub">Account expansion • Field intelligence • Marketing execution</div></div>
+<div class="brand"><img class="brand-logo" src="logo_main.jpg" alt="Projigo logo"><div><h1>Sales Hub</h1><div class="sub">Account expansion • Field intelligence • Marketing execution</div></div></div>
 <nav>
 <button class="tab active" data-view="dashboard">Dashboard</button>
 <button class="tab" data-view="customers">Customers</button>
