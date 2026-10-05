@@ -26,6 +26,7 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
 .section{margin:20px 0}.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.empty{padding:22px;text-align:center;color:var(--muted)}
 .notice{background:#fff7ed;color:#9a3412;padding:10px 12px;border:1px solid #fed7aa;border-radius:8px;margin-bottom:16px;font-size:13px}
 .calendar-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px}.cal-dow{text-align:center;font-size:12px;font-weight:700;color:var(--muted);padding:6px}.cal-day{min-height:120px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px}.cal-day.other{opacity:.35}.cal-day.today{outline:2px solid var(--accent)}.cal-num{font-size:12px;font-weight:700;margin-bottom:5px}.cal-event{display:block;width:100%;border:0;text-align:left;border-radius:5px;padding:5px 6px;margin:4px 0;font-size:11px;cursor:pointer;background:var(--accent2);border-left:3px solid var(--accent)}.cal-event.marketing{background:#eef2ff;border-left-color:#6366f1}.cal-event.sales{background:#ecfdf3;border-left-color:#16a34a}.cal-event.customer{background:#eff6ff;border-left-color:#2563eb}.cal-event.hitlist{background:#fff3e6;border-left-color:var(--accent)}.calendar-list{margin-top:18px}.dashboard-list{margin-top:18px}.dashboard-list h3{display:flex;justify-content:space-between;align-items:center}.dashboard-item{padding:10px 0;border-bottom:1px solid #eee}.dashboard-item:last-child{border-bottom:0}
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;padding:20px}.modal-backdrop.open{display:flex}.modal{background:#fff;border-radius:14px;width:min(760px,100%);max-height:90vh;overflow:auto;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}.modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}.modal-head h3{margin:0}.modal-close{border:0;background:#eee;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:20px}
 @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.row,.row3{grid-template-columns:1fr}header{align-items:flex-start;gap:12px;flex-direction:column}}
 </style>
 </head>
@@ -74,11 +75,12 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
 <div><label>Customer</label><input id="oCustomer"></div>
 <div><label>Location / Site</label><input id="oLocation" placeholder="City, plant or site"></div>
 <div><label>Opportunity</label><input id="oTitle"></div>
-<div><label>Estimated value</label><input id="oValue" placeholder="SEK / EUR"></div>
+<div><label>Estimated hours</label><input id="oHours" type="number" min="0" placeholder="Hours"></div>
 <div><label>Stage</label><select id="oStage"><option>Identified</option><option>Qualified</option><option>Meeting</option><option>Proposal</option><option>Negotiation</option><option>Won</option><option>Lost</option></select></div>
 <div><label>Owner</label><input id="oOwner"></div>
+<div><label>Expected start</label><input id="oStart" type="date"></div>
 <div><label>Next action date</label><input id="oDate" type="date"></div>
-</div><div style="margin-top:12px"><label>Next action</label><input id="oNext" placeholder="What happens next?"></div><div class="actions"><button class="primary" onclick="addOpportunity()">Save opportunity</button></div></div>
+</div><div class="row" style="margin-top:12px"><div><label>Category</label><input id="oCategory" placeholder="Manual / checklist category"></div><div><label>Source checkpoint</label><input id="oSource" placeholder="Optional"></div></div><div style="margin-top:12px"><label>Next action</label><input id="oNext" placeholder="What happens next?"></div><div class="actions"><button class="primary" onclick="addOpportunity()">Save opportunity</button></div></div>
 <div class="section card"><div class="row"><div><label>Filter by location</label><input id="oppLocationFilter" placeholder="Type a location..." oninput="renderOpps()"></div><div><label>Sort</label><select id="oppSort" onchange="renderOpps()"><option value="date">Next action date</option><option value="location">Location A–Z</option><option value="customer">Customer A–Z</option></select></div></div></div>
 <div class="section" id="oppList"></div>
 </section>
@@ -121,6 +123,29 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
 <div class="card calendar-list"><h3>Upcoming deadlines</h3><div id="calendarUpcoming"></div></div>
 </section>
 </main>
+<div id="oppModal" class="modal-backdrop" onclick="if(event.target===this)closeOpportunityModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>Create Opportunity</h3><div id="oppModalSource" class="muted"></div></div>
+      <button class="modal-close" onclick="closeOpportunityModal()">×</button>
+    </div>
+    <input type="hidden" id="moCustomerId"><input type="hidden" id="moCheckIndex">
+    <div class="row3">
+      <div><label>Customer</label><input id="moCustomer" readonly></div>
+      <div><label>Location / Site</label><input id="moLocation" readonly></div>
+      <div><label>Category</label><input id="moCategory" readonly></div>
+      <div><label>Opportunity</label><input id="moTitle" placeholder="Describe the opportunity"></div>
+      <div><label>Estimated hours</label><input id="moHours" type="number" min="0" placeholder="Hours"></div>
+      <div><label>Stage</label><select id="moStage"><option>Identified</option><option>Qualified</option><option>Meeting</option><option>Proposal</option><option>Negotiation</option><option>Won</option><option>Lost</option></select></div>
+      <div><label>Owner</label><input id="moOwner"></div>
+      <div><label>Expected start</label><input id="moStart" type="date"></div>
+      <div><label>Next action date</label><input id="moDate" type="date"></div>
+    </div>
+    <div style="margin-top:12px"><label>Next action</label><input id="moNext" placeholder="What happens next?"></div>
+    <div style="margin-top:12px"><label>Notes from checkpoint</label><textarea id="moNotes"></textarea></div>
+    <div class="actions"><button class="primary" onclick="saveOpportunityFromChecklist()">Create opportunity</button><button class="secondary" onclick="closeOpportunityModal()">Cancel</button></div>
+  </div>
+</div>
 <script>
 const checklist=[
 {cat:"Relationships",q:"Do we know the maintenance manager?",how:"Identify who owns maintenance planning, contractor support and reliability. Ask your current contact for an introduction."},
@@ -189,7 +214,27 @@ function removeKeyPerson(cid,pid){
   Object.values(c.checks||{}).forEach(ch=>{ch.personIds=(ch.personIds||[]).filter(x=>String(x)!==String(pid)); if(String(ch.personId)===String(pid))ch.personId=""});
   save();
 }
-function addOpportunity(){if(!oTitle.value.trim())return;db.opportunities.push({id:Date.now(),customer:oCustomer.value,location:oLocation.value,title:oTitle.value,value:oValue.value,stage:oStage.value,owner:oOwner.value,date:oDate.value,next:oNext.value});["oCustomer","oLocation","oTitle","oValue","oOwner","oDate","oNext"].forEach(id=>document.getElementById(id).value="");save()}
+function addOpportunity(){if(!oTitle.value.trim())return;db.opportunities.push({id:Date.now(),customer:oCustomer.value,location:oLocation.value,title:oTitle.value,hours:oHours.value,stage:oStage.value,owner:oOwner.value,start:oStart.value,date:oDate.value,next:oNext.value,category:oCategory.value,sourceQuestion:oSource.value});["oCustomer","oLocation","oTitle","oHours","oOwner","oStart","oDate","oNext","oCategory","oSource"].forEach(id=>document.getElementById(id).value="");save()}
+function openOpportunityModal(cid,idx){
+  let customer=db.customers.find(x=>x.id===cid); if(!customer)return;
+  let cp=checklist[idx]; if(!cp)return;
+  moCustomerId.value=cid; moCheckIndex.value=idx;
+  moCustomer.value=customer.name||""; moLocation.value=customer.location||"";
+  moCategory.value=cp.cat||"";
+  moTitle.value=""; moHours.value=""; moStage.value="Identified";
+  moOwner.value=customer.owner||""; moStart.value=""; moDate.value=""; moNext.value="";
+  moNotes.value=customer.checks?.[idx]?.comment||"";
+  oppModalSource.textContent="From checkpoint: "+cp.q;
+  oppModal.classList.add("open");
+}
+function closeOpportunityModal(){oppModal.classList.remove("open")}
+function saveOpportunityFromChecklist(){
+  if(!moTitle.value.trim())return;
+  let idx=Number(moCheckIndex.value), cid=Number(moCustomerId.value), cp=checklist[idx], customer=db.customers.find(x=>x.id===cid);
+  db.opportunities.push({id:Date.now(),customer:moCustomer.value,location:moLocation.value,title:moTitle.value,hours:moHours.value,stage:moStage.value,owner:moOwner.value,start:moStart.value,date:moDate.value,next:moNext.value,category:moCategory.value,sourceQuestion:cp?.q||"",sourceCustomerId:cid,notes:moNotes.value});
+  if(customer){customer.checks[idx]=customer.checks[idx]||{};customer.checks[idx].opportunityCreated=true}
+  closeOpportunityModal();save();
+}
 function addMarketing(){if(!mIdea.value.trim())return;db.marketing.push({id:Date.now(),idea:mIdea.value,audience:mAudience.value,owner:mOwner.value,status:mStatus.value,date:mDate.value,why:mWhy.value});["mIdea","mAudience","mOwner","mDate","mWhy"].forEach(id=>document.getElementById(id).value="");save()}
 function addHitlist(){
   let company=hCompany.value.trim();
@@ -221,9 +266,9 @@ customerList.innerHTML=rows.length?rows.map(c=>{
   let personOptions='';
   return '<div class="card section" id="customer-'+c.id+'"><div style="display:flex;justify-content:space-between;gap:10px"><div><h3>'+esc(c.name)+'</h3><div class="muted">Location: '+esc(c.location||"—")+' • Owner: '+esc(c.owner||"—")+' • Next follow-up: '+esc(c.follow||"—")+' • Account score: '+done+'/'+checklist.length+'</div></div><button class="secondary" onclick="delCustomer('+c.id+')">Delete</button></div>'+
   '<div class="check"><h3>Key Persons</h3><div>'+people+'</div><div class="row" style="margin-top:12px"><div><label>Name</label><input id="kpName'+c.id+'" placeholder="Name"></div><div><label>Role / Function</label><input id="kpRole'+c.id+'" placeholder="Automation Manager, Maintenance Manager, Production..."></div><div><label>Email</label><input id="kpEmail'+c.id+'" type="email" placeholder="name@company.com"></div><div><label>Phone number</label><input id="kpPhone'+c.id+'" type="tel" placeholder="+46 ..."></div></div><div class="actions"><button class="primary" onclick="addKeyPerson('+c.id+')">Add key person</button></div></div>'+
-  checklist.map((x,i)=>'<div class="check"><div class="check-head"><input type="checkbox" '+(c.checks?.[i]?.done?'checked':'')+' onchange="updCheck('+c.id+','+i+',\'done\',this.checked)"><div><b>'+esc(x.q)+'</b><span class="badge">'+esc(x.cat)+'</span></div></div><details class="how"><summary>How to do it</summary><div style="margin-top:6px">'+esc(x.how)+'</div></details><div class="comment"><div class="row"><div><label>Key persons for this question</label><div class="check" style="margin:0;padding:8px">'+(c.keyPersons.length?c.keyPersons.map(p=>{let checked=(c.checks?.[i]?.personIds||[]).some(x=>String(x)===String(p.id))||(String(c.checks?.[i]?.personId||"")===String(p.id));return '<label style="display:flex;align-items:center;gap:8px;margin:5px 0;color:var(--ink)"><input style="width:auto" type="checkbox" '+(checked?'checked':'')+' onchange="toggleCheckPerson('+c.id+','+i+','+p.id+',this.checked)"><span>'+esc(p.name)+(p.role?' — '+esc(p.role):'')+'</span></label>'}).join(""):'<div class="muted">Add key persons above first.</div>')+'</div></div><div><label>Comment / evidence</label><textarea onchange="updCheck('+c.id+','+i+',\'comment\',this.value)">'+esc(c.checks?.[i]?.comment||"")+'</textarea></div></div></div></div>').join("")+'</div>'
+  checklist.map((x,i)=>'<div class="check"><div class="check-head"><input type="checkbox" '+(c.checks?.[i]?.done?'checked':'')+' onchange="updCheck('+c.id+','+i+',\'done\',this.checked)"><div><b>'+esc(x.q)+'</b><span class="badge">'+esc(x.cat)+'</span></div></div><details class="how"><summary>How to do it</summary><div style="margin-top:6px">'+esc(x.how)+'</div></details><div class="actions" style="margin-left:26px"><button class="primary" onclick="openOpportunityModal('+c.id+','+i+')">+ Create Opportunity</button>'+(c.checks?.[i]?.opportunityCreated?'<span class="badge">Opportunity created</span>':'')+'</div><div class="comment"><div class="row"><div><label>Key persons for this question</label><div class="check" style="margin:0;padding:8px">'+(c.keyPersons.length?c.keyPersons.map(p=>{let checked=(c.checks?.[i]?.personIds||[]).some(x=>String(x)===String(p.id))||(String(c.checks?.[i]?.personId||"")===String(p.id));return '<label style="display:flex;align-items:center;gap:8px;margin:5px 0;color:var(--ink)"><input style="width:auto" type="checkbox" '+(checked?'checked':'')+' onchange="toggleCheckPerson('+c.id+','+i+','+p.id+',this.checked)"><span>'+esc(p.name)+(p.role?' — '+esc(p.role):'')+'</span></label>'}).join(""):'<div class="muted">Add key persons above first.</div>')+'</div></div><div><label>Comment / evidence</label><textarea onchange="updCheck('+c.id+','+i+',\'comment\',this.value)">'+esc(c.checks?.[i]?.comment||"")+'</textarea></div></div></div></div>').join("")+'</div>'
 }).join(""):'<div class="empty">No customers for this location.</div>'}
-function renderOpps(){let filter=(oppLocationFilter?.value||"").toLowerCase(),sort=oppSort?.value||"date";let rows=[...db.opportunities].filter(o=>(o.location||"").toLowerCase().includes(filter));rows.sort((a,b)=>sort==="location"?(a.location||"").localeCompare(b.location||""):sort==="customer"?(a.customer||"").localeCompare(b.customer||""):(a.date||"9999").localeCompare(b.date||"9999"));oppList.innerHTML=rows.length?'<table><tr><th>Customer</th><th>Location</th><th>Opportunity</th><th>Stage</th><th>Value</th><th>Next action</th><th>Owner</th><th></th></tr>'+rows.map(o=>'<tr><td>'+esc(o.customer)+'</td><td>'+esc(o.location||"—")+'</td><td>'+esc(o.title)+'</td><td>'+esc(o.stage)+'</td><td>'+esc(o.value)+'</td><td>'+esc(o.next)+'<div class="muted">'+esc(o.date)+'</div></td><td>'+esc(o.owner)+'</td><td><button class="secondary" onclick="remove(\'opportunities\','+o.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No opportunities for this location.</div>'}
+function renderOpps(){let filter=(oppLocationFilter?.value||"").toLowerCase(),sort=oppSort?.value||"date";let rows=[...db.opportunities].filter(o=>(o.location||"").toLowerCase().includes(filter));rows.sort((a,b)=>sort==="location"?(a.location||"").localeCompare(b.location||""):sort==="customer"?(a.customer||"").localeCompare(b.customer||""):(a.date||"9999").localeCompare(b.date||"9999"));oppList.innerHTML=rows.length?'<table><tr><th>Customer</th><th>Location</th><th>Opportunity</th><th>Category</th><th>Stage</th><th>Hours</th><th>Expected start</th><th>Next action</th><th>Owner</th><th></th></tr>'+rows.map(o=>'<tr><td>'+esc(o.customer)+'</td><td>'+esc(o.location||"—")+'</td><td>'+esc(o.title)+'</td><td>'+esc(o.stage)+'</td><td>'+esc(o.value)+'</td><td>'+esc(o.next)+'<div class="muted">'+esc(o.date)+'</div></td><td>'+esc(o.owner)+'</td><td><button class="secondary" onclick="remove(\'opportunities\','+o.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No opportunities for this location.</div>'}
 function renderMarketing(){marketingList.innerHTML=db.marketing.length?'<table><tr><th>Idea</th><th>Audience</th><th>Status</th><th>Owner</th><th>Deadline</th><th>Why it matters</th><th></th></tr>'+db.marketing.map(m=>'<tr><td>'+esc(m.idea)+'</td><td>'+esc(m.audience)+'</td><td>'+esc(m.status)+'</td><td>'+esc(m.owner)+'</td><td>'+esc(m.date)+'</td><td>'+esc(m.why)+'</td><td><button class="secondary" onclick="remove(\'marketing\','+m.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No marketing ideas yet.</div>'}
 function renderHitlist(){
   let filter=(hitlistLocationFilter?.value||"").toLowerCase();
