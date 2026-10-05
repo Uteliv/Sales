@@ -12,7 +12,7 @@ header{background:var(--charcoal);color:#fff;padding:18px 26px;display:flex;just
 header h1{margin:0;font-size:21px}.sub{color:#d1d5db;font-size:13px;margin-top:3px}
 nav{display:flex;gap:8px;flex-wrap:wrap}.tab{border:1px solid #3b3b3b;background:#242424;color:#fff;padding:9px 13px;border-radius:7px;cursor:pointer}.tab:hover{border-color:var(--accent);color:var(--accent)}.tab.active{background:var(--accent);border-color:var(--accent);color:#111;font-weight:700}
 main{max-width:1200px;margin:24px auto;padding:0 18px}.view{display:none}.view.active{display:block}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.035)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.035)}
 .kpi{border-top:4px solid var(--accent);cursor:pointer;transition:.15s}.kpi:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(0,0,0,.08)}.kpi b{font-size:30px;display:block}.kpi span{color:var(--muted);font-size:13px}
 h2{margin:0 0 14px}h3{margin:8px 0 12px}.muted{color:var(--muted)}label{font-size:13px;color:var(--muted);display:block;margin-bottom:5px}
 input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}textarea{min-height:80px;resize:vertical}
@@ -49,12 +49,11 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
 <h2>Sales Manager Dashboard</h2>
 <div class="grid">
 <div class="card kpi" onclick="showDashboardList('customers')"><b id="kCustomers">0</b><span>Customers</span></div>
-<div class="card kpi" onclick="showDashboardList('opportunities')"><b id="kOpps">0</b><span>Open opportunities</span></div>
 <div class="card kpi" onclick="showDashboardList('marketing')"><b id="kMarketing">0</b><span>Marketing ideas</span></div>
 <div class="card kpi" onclick="showDashboardList('hitlist')"><b id="kHitlist">0</b><span>Hitlist accounts</span></div>
 </div>
 <div class="section card"><h3>Focus this week</h3><div id="focusList" class="muted">Add actions to build your focus list.</div></div>
-<div class="section card dashboard-list"><h3><span id="dashboardListTitle">Selected items</span><button class="secondary" onclick="clearDashboardList()">Clear</button></h3><div id="dashboardList"><div class="empty">Click a dashboard card to show its list here.</div></div></div>
+<div class="section card dashboard-list"><h3><span id="dashboardListTitle">Selected items</span><button class="secondary" onclick="clearDashboardList()">Clear</button></h3><div id="dashboardList"><div class="empty">Click Customers, Marketing, or Hitlist to show its list here.</div></div></div>
 </section>
 
 <section id="customers" class="view">
@@ -76,7 +75,7 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
 <div><label>Location / Site</label><input id="oLocation" placeholder="City, plant or site"></div>
 <div><label>Opportunity</label><input id="oTitle"></div>
 <div><label>Estimated hours</label><input id="oHours" type="number" min="0" placeholder="Hours"></div>
-<div><label>Stage</label><select id="oStage"><option>Identified</option><option>Qualified</option><option>Meeting</option><option>Proposal</option><option>Negotiation</option><option>Won</option><option>Lost</option></select></div>
+<div><label>Status</label><select id="oStage"><option>Follow up</option><option>Finalize</option><option>Closed</option></select></div>
 <div><label>Owner</label><input id="oOwner"></div>
 <div><label>Expected start</label><input id="oStart" type="date"></div>
 <div><label>Next action date</label><input id="oDate" type="date"></div>
@@ -136,7 +135,7 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
       <div><label>Category</label><input id="moCategory" readonly></div>
       <div><label>Opportunity</label><input id="moTitle" placeholder="Describe the opportunity"></div>
       <div><label>Estimated hours</label><input id="moHours" type="number" min="0" placeholder="Hours"></div>
-      <div><label>Stage</label><select id="moStage"><option>Identified</option><option>Qualified</option><option>Meeting</option><option>Proposal</option><option>Negotiation</option><option>Won</option><option>Lost</option></select></div>
+      <div><label>Status</label><select id="moStage"><option>Follow up</option><option>Finalize</option><option>Closed</option></select></div>
       <div><label>Owner</label><input id="moOwner"></div>
       <div><label>Expected start</label><input id="moStart" type="date"></div>
       <div><label>Next action date</label><input id="moDate" type="date"></div>
@@ -222,7 +221,7 @@ function openOpportunityModal(cid,idx){
   moCustomerId.value=cid; moCheckIndex.value=idx;
   moCustomer.value=customer.name||""; moLocation.value=customer.location||"";
   moCategory.value=cp.cat||"";
-  moTitle.value=""; moHours.value=""; moStage.value="Identified";
+  moTitle.value=""; moHours.value=""; moStage.value="Follow up";
   moOwner.value=customer.owner||""; moStart.value=""; moDate.value=""; moNext.value="";
   moNotes.value=customer.checks?.[idx]?.comment||"";
   oppModalSource.textContent="From checkpoint: "+cp.q;
@@ -301,7 +300,7 @@ customerList.innerHTML=rows.length?rows.map(c=>{
     '</div>'+
   '</div>'
 }).join(""):'<div class="empty">No customers for this location.</div>'}
-function renderOpps(){let filter=(oppLocationFilter?.value||"").toLowerCase(),sort=oppSort?.value||"date";let rows=[...db.opportunities].filter(o=>(o.location||"").toLowerCase().includes(filter));rows.sort((a,b)=>sort==="location"?(a.location||"").localeCompare(b.location||""):sort==="customer"?(a.customer||"").localeCompare(b.customer||""):(a.date||"9999").localeCompare(b.date||"9999"));oppList.innerHTML=rows.length?'<table><tr><th>Customer</th><th>Location</th><th>Opportunity</th><th>Category</th><th>Stage</th><th>Hours</th><th>Expected start</th><th>Next action</th><th>Owner</th><th></th></tr>'+rows.map(o=>'<tr><td>'+esc(o.customer)+'</td><td>'+esc(o.location||"—")+'</td><td>'+esc(o.title)+'</td><td>'+esc(o.stage)+'</td><td>'+esc(o.value)+'</td><td>'+esc(o.next)+'<div class="muted">'+esc(o.date)+'</div></td><td>'+esc(o.owner)+'</td><td><button class="secondary" onclick="remove(\'opportunities\','+o.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No opportunities for this location.</div>'}
+function renderOpps(){let filter=(oppLocationFilter?.value||"").toLowerCase(),sort=oppSort?.value||"date";let rows=[...db.opportunities].filter(o=>(o.location||"").toLowerCase().includes(filter));rows.sort((a,b)=>sort==="location"?(a.location||"").localeCompare(b.location||""):sort==="customer"?(a.customer||"").localeCompare(b.customer||""):(a.date||"9999").localeCompare(b.date||"9999"));oppList.innerHTML=rows.length?'<table><tr><th>Customer</th><th>Location</th><th>Opportunity</th><th>Category</th><th>Status</th><th>Hours</th><th>Expected start</th><th>Next action</th><th>Owner</th><th></th></tr>'+rows.map(o=>'<tr><td>'+esc(o.customer)+'</td><td>'+esc(o.location||"—")+'</td><td>'+esc(o.title)+'</td><td>'+esc(o.stage)+'</td><td>'+esc(o.value)+'</td><td>'+esc(o.next)+'<div class="muted">'+esc(o.date)+'</div></td><td>'+esc(o.owner)+'</td><td><button class="secondary" onclick="remove(\'opportunities\','+o.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No opportunities for this location.</div>'}
 function renderMarketing(){marketingList.innerHTML=db.marketing.length?'<table><tr><th>Idea</th><th>Audience</th><th>Status</th><th>Owner</th><th>Deadline</th><th>Why it matters</th><th></th></tr>'+db.marketing.map(m=>'<tr><td>'+esc(m.idea)+'</td><td>'+esc(m.audience)+'</td><td>'+esc(m.status)+'</td><td>'+esc(m.owner)+'</td><td>'+esc(m.date)+'</td><td>'+esc(m.why)+'</td><td><button class="secondary" onclick="remove(\'marketing\','+m.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No marketing ideas yet.</div>'}
 function renderHitlist(){
   let filter=(hitlistLocationFilter?.value||"").toLowerCase();
@@ -364,7 +363,6 @@ function openCustomerFromDashboard(id){
 function showDashboardList(type){
 let title="",html="";
 if(type==="customers"){title="Customers";html=db.customers.length?db.customers.map(x=>'<div class="dashboard-item"><button class="secondary" style="padding:4px 8px;margin-right:6px" onclick="openCustomerFromDashboard('+x.id+')">'+esc(x.name)+'</button><span class="badge">'+esc(x.location||"No location")+'</span><div class="muted">Owner: '+esc(x.owner||"—")+' • Follow-up: '+esc(x.follow||"—")+'</div></div>').join(""):'<div class="empty">No customers yet.</div>'}
-if(type==="opportunities"){title="Open opportunities";let rows=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage));html=rows.length?rows.map(x=>'<div class="dashboard-item"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.title)+' <span class="badge">'+esc(x.stage)+'</span><div class="muted">'+esc(x.location||"No location")+' • '+esc(x.next||"No next action")+' • '+esc(x.date||"No date")+'</div></div>').join(""):'<div class="empty">No open opportunities.</div>'}
 if(type==="marketing"){title="Marketing ideas";html=db.marketing.length?db.marketing.map(x=>'<div class="dashboard-item"><b>'+esc(x.idea)+'</b> <span class="badge">'+esc(x.status)+'</span><div class="muted">Owner: '+esc(x.owner||"—")+' • Deadline: '+esc(x.date||"—")+' • Audience: '+esc(x.audience||"—")+'</div></div>').join(""):'<div class="empty">No marketing ideas.</div>'}
 if(type==="hitlist"){title="Hitlist companies";html=db.hitlist.length?db.hitlist.map(x=>'<div class="dashboard-item"><b>'+esc(x.company)+'</b> <span class="badge">'+esc(x.status||"Not contacted")+'</span><div class="muted">'+esc(x.location||"No location")+' • Contacts: '+((x.contacts&&x.contacts.length)||0)+' • Next: '+esc(x.next||"—")+'</div></div>').join(""):'<div class="empty">No hitlist companies.</div>'}
 dashboardListTitle.textContent=title;dashboardList.innerHTML=html}
@@ -405,7 +403,7 @@ function renderCalendar(){
   let now=new Date();now.setHours(0,0,0,0);let upcoming=events.filter(e=>new Date(e.date+"T00:00:00")>=now).slice(0,15);
   calendarUpcoming.innerHTML=upcoming.length?upcoming.map(e=>'<div class="dashboard-item"><span class="badge">'+esc(e.type)+'</span> <b>'+esc(e.date)+'</b> — '+esc(e.title)+'<div class="muted">'+esc(e.detail)+'</div></div>').join(""):'<div class="empty">No upcoming deadlines.</div>';
 }
-function render(){kCustomers.textContent=db.customers.length;kOpps.textContent=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage)).length;kMarketing.textContent=db.marketing.length;kHitlist.textContent=db.hitlist.length;let items=db.opportunities.filter(x=>x.next||x.date).slice(0,5);focusList.innerHTML=items.length?items.map(x=>'<div class="dashboard-item"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.next||x.title)+' <span class="muted">'+esc(x.date||"")+'</span></div>').join(""):'Add actions to build your focus list.';renderCustomers();renderOpps();renderMarketing();renderHitlist();renderCalendar()}
+function render(){kCustomers.textContent=db.customers.length;kMarketing.textContent=db.marketing.length;kHitlist.textContent=db.hitlist.length;focusList.innerHTML='<div class="muted">Use the Opportunities tab to review sales follow-ups.</div>';renderCustomers();renderOpps();renderMarketing();renderHitlist();renderCalendar()}
 render();
 </script>
 </body>
