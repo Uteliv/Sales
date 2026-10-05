@@ -96,19 +96,18 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
 
 <section id="hitlist" class="view">
 <h2>Sales Hitlist</h2>
-<div class="card"><div class="row3">
-<div><label>Company / Account</label><input id="hCompany" placeholder="Customer or target account"></div>
-<div><label>Location / Site</label><input id="hLocation" placeholder="City, plant or site"></div>
-<div><label>Owner</label><input id="hOwner" placeholder="Responsible person"></div>
-<div><label>Priority</label><select id="hPriority"><option>High</option><option>Medium</option><option>Low</option></select></div>
-<div><label>Relationship status</label><select id="hRelation"><option>Strong</option><option>Known contact</option><option>Weak</option><option>No active contact</option></select></div>
-<div><label>Next follow-up</label><input id="hDate" type="date"></div>
-<div><label>Potential</label><input id="hPotential" placeholder="Project / staffing / shutdown..."></div>
+<div class="card">
+<div class="row">
+<div><label>Company name</label><input id="hCompany" placeholder="Company name"></div>
+<div style="display:flex;align-items:end"><button class="primary" style="width:100%" onclick="addHitlist()">Add company to hitlist</button></div>
 </div>
-<div style="margin-top:12px"><label>Why is this account on the hitlist?</label><textarea id="hReason"></textarea></div>
-<div style="margin-top:12px"><label>Next move</label><input id="hNext" placeholder="Introduction, meeting, site visit, follow-up..."></div>
-<div class="actions"><button class="primary" onclick="addHitlist()">Add to hitlist</button></div></div>
-<div class="section card"><div class="row"><div><label>Filter by location</label><input id="hitlistLocationFilter" placeholder="Type a location..." oninput="renderHitlist()"></div><div><label>Sort</label><select id="hitlistSort" onchange="renderHitlist()"><option value="priority">Priority</option><option value="location">Location A–Z</option><option value="company">Account A–Z</option><option value="date">Follow-up date</option></select></div></div></div>
+</div>
+<div class="section card">
+<div class="row">
+<div><label>Filter by location</label><input id="hitlistLocationFilter" placeholder="Type a location..." oninput="renderHitlist()"></div>
+<div><label>Sort</label><select id="hitlistSort" onchange="renderHitlist()"><option value="company">Company A–Z</option><option value="location">Location A–Z</option><option value="status">Status</option><option value="date">Next follow-up</option></select></div>
+</div>
+</div>
 <div class="section" id="hitlistList"></div>
 </section>
 </main>
@@ -150,7 +149,23 @@ function removeKeyPerson(cid,pid){
 }
 function addOpportunity(){if(!oTitle.value.trim())return;db.opportunities.push({id:Date.now(),customer:oCustomer.value,location:oLocation.value,title:oTitle.value,value:oValue.value,stage:oStage.value,owner:oOwner.value,date:oDate.value,next:oNext.value});["oCustomer","oLocation","oTitle","oValue","oOwner","oDate","oNext"].forEach(id=>document.getElementById(id).value="");save()}
 function addMarketing(){if(!mIdea.value.trim())return;db.marketing.push({id:Date.now(),idea:mIdea.value,audience:mAudience.value,owner:mOwner.value,status:mStatus.value,date:mDate.value,why:mWhy.value});["mIdea","mAudience","mOwner","mDate","mWhy"].forEach(id=>document.getElementById(id).value="");save()}
-function addHitlist(){if(!hCompany.value.trim())return;db.hitlist.push({id:Date.now(),company:hCompany.value,location:hLocation.value,owner:hOwner.value,priority:hPriority.value,relation:hRelation.value,date:hDate.value,potential:hPotential.value,reason:hReason.value,next:hNext.value});["hCompany","hLocation","hOwner","hDate","hPotential","hReason","hNext"].forEach(id=>document.getElementById(id).value="");save()}
+function addHitlist(){
+  let company=hCompany.value.trim();
+  if(!company)return;
+  db.hitlist.push({
+    id:Date.now(), company,
+    contact:"", email:"", phone:"", location:"",
+    status:"Not contacted", does:"", owner:"",
+    knownBy:"", mayKnow:"", targetPerson:"",
+    next:"", date:"", notes:""
+  });
+  hCompany.value="";
+  save();
+}
+function updateHitlist(id,field,value){
+  let h=db.hitlist.find(x=>x.id===id); if(!h)return;
+  h[field]=value; save();
+}
 function remove(type,id){db[type]=db[type].filter(x=>x.id!==id);save()}
 
 function renderCustomers(){
@@ -168,8 +183,51 @@ customerList.innerHTML=rows.length?rows.map(c=>{
 }).join(""):'<div class="empty">No customers for this location.</div>'}
 function renderOpps(){let filter=(oppLocationFilter?.value||"").toLowerCase(),sort=oppSort?.value||"date";let rows=[...db.opportunities].filter(o=>(o.location||"").toLowerCase().includes(filter));rows.sort((a,b)=>sort==="location"?(a.location||"").localeCompare(b.location||""):sort==="customer"?(a.customer||"").localeCompare(b.customer||""):(a.date||"9999").localeCompare(b.date||"9999"));oppList.innerHTML=rows.length?'<table><tr><th>Customer</th><th>Location</th><th>Opportunity</th><th>Stage</th><th>Value</th><th>Next action</th><th>Owner</th><th></th></tr>'+rows.map(o=>'<tr><td>'+esc(o.customer)+'</td><td>'+esc(o.location||"—")+'</td><td>'+esc(o.title)+'</td><td>'+esc(o.stage)+'</td><td>'+esc(o.value)+'</td><td>'+esc(o.next)+'<div class="muted">'+esc(o.date)+'</div></td><td>'+esc(o.owner)+'</td><td><button class="secondary" onclick="remove(\'opportunities\','+o.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No opportunities for this location.</div>'}
 function renderMarketing(){marketingList.innerHTML=db.marketing.length?'<table><tr><th>Idea</th><th>Audience</th><th>Status</th><th>Owner</th><th>Deadline</th><th>Why it matters</th><th></th></tr>'+db.marketing.map(m=>'<tr><td>'+esc(m.idea)+'</td><td>'+esc(m.audience)+'</td><td>'+esc(m.status)+'</td><td>'+esc(m.owner)+'</td><td>'+esc(m.date)+'</td><td>'+esc(m.why)+'</td><td><button class="secondary" onclick="remove(\'marketing\','+m.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No marketing ideas yet.</div>'}
-function renderHitlist(){let filter=(hitlistLocationFilter?.value||"").toLowerCase(),sort=hitlistSort?.value||"priority",order={High:0,Medium:1,Low:2};let rows=[...db.hitlist].filter(h=>(h.location||"").toLowerCase().includes(filter));rows.sort((a,b)=>sort==="location"?(a.location||"").localeCompare(b.location||""):sort==="company"?(a.company||"").localeCompare(b.company||""):sort==="date"?(a.date||"9999").localeCompare(b.date||"9999"):(order[a.priority]??9)-(order[b.priority]??9));hitlistList.innerHTML=rows.length?'<table><tr><th>Account</th><th>Location</th><th>Priority</th><th>Relationship</th><th>Potential</th><th>Why</th><th>Next move</th><th>Follow-up</th><th>Owner</th><th></th></tr>'+rows.map(h=>'<tr><td><b>'+esc(h.company)+'</b></td><td>'+esc(h.location||"—")+'</td><td>'+esc(h.priority)+'</td><td>'+esc(h.relation)+'</td><td>'+esc(h.potential)+'</td><td>'+esc(h.reason)+'</td><td>'+esc(h.next)+'</td><td>'+esc(h.date)+'</td><td>'+esc(h.owner)+'</td><td><button class="secondary" onclick="remove(\'hitlist\','+h.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No hitlist accounts for this location.</div>'}
-
+function renderHitlist(){
+  let filter=(hitlistLocationFilter?.value||"").toLowerCase();
+  let sort=hitlistSort?.value||"company";
+  let rows=[...db.hitlist].filter(h=>(h.location||"").toLowerCase().includes(filter));
+  rows.sort((a,b)=>{
+    if(sort==="location") return (a.location||"").localeCompare(b.location||"");
+    if(sort==="status") return (a.status||"").localeCompare(b.status||"");
+    if(sort==="date") return (a.date||"9999").localeCompare(b.date||"9999");
+    return (a.company||"").localeCompare(b.company||"");
+  });
+  hitlistList.innerHTML=rows.length?rows.map(h=>
+    '<div class="card section" id="hitlist-'+h.id+'">'+
+      '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">'+
+        '<div><h3>'+esc(h.company)+'</h3><div class="muted">'+esc(h.location||"No location")+' • '+esc(h.status||"Not contacted")+(h.contact?' • '+esc(h.contact):'')+'</div></div>'+
+        '<button class="secondary" onclick="remove(\'hitlist\','+h.id+')">Delete</button>'+
+      '</div>'+
+      '<details style="margin-top:12px" open>'+
+        '<summary><b>Company profile</b></summary>'+
+        '<div class="row3" style="margin-top:12px">'+
+          '<div><label>Main contact</label><input value="'+esc(h.contact||"")+'" onchange="updateHitlist('+h.id+',\'contact\',this.value)"></div>'+
+          '<div><label>Email</label><input type="email" value="'+esc(h.email||"")+'" onchange="updateHitlist('+h.id+',\'email\',this.value)"></div>'+
+          '<div><label>Phone</label><input value="'+esc(h.phone||"")+'" onchange="updateHitlist('+h.id+',\'phone\',this.value)"></div>'+
+          '<div><label>Location</label><input value="'+esc(h.location||"")+'" onchange="updateHitlist('+h.id+',\'location\',this.value)"></div>'+
+          '<div><label>Status</label><select onchange="updateHitlist('+h.id+',\'status\',this.value)">'+
+            ['Not contacted','Warm path found','Introduction requested','Contacted','Meeting booked','Opportunity','Not relevant'].map(s=>'<option '+((h.status||'Not contacted')===s?'selected':'')+'>'+s+'</option>').join('')+
+          '</select></div>'+
+          '<div><label>Owner</label><input value="'+esc(h.owner||"")+'" onchange="updateHitlist('+h.id+',\'owner\',this.value)"></div>'+
+        '</div>'+
+        '<div style="margin-top:12px"><label>What does the company do?</label><textarea onchange="updateHitlist('+h.id+',\'does\',this.value)">'+esc(h.does||"")+'</textarea></div>'+
+        '<div class="how" style="margin-left:0;margin-top:12px"><b>Warm contact path</b>'+
+          '<div class="row3" style="margin-top:10px">'+
+            '<div><label>Who do we know?</label><input value="'+esc(h.knownBy||"")+'" onchange="updateHitlist('+h.id+',\'knownBy\',this.value)" placeholder="Our contact"></div>'+
+            '<div><label>Who might they know?</label><input value="'+esc(h.mayKnow||"")+'" onchange="updateHitlist('+h.id+',\'mayKnow\',this.value)" placeholder="Possible bridge person"></div>'+
+            '<div><label>Target person</label><input value="'+esc(h.targetPerson||"")+'" onchange="updateHitlist('+h.id+',\'targetPerson\',this.value)" placeholder="Person at target company"></div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="row" style="margin-top:12px">'+
+          '<div><label>Next step</label><input value="'+esc(h.next||"")+'" onchange="updateHitlist('+h.id+',\'next\',this.value)"></div>'+
+          '<div><label>Next follow-up</label><input type="date" value="'+esc(h.date||"")+'" onchange="updateHitlist('+h.id+',\'date\',this.value)"></div>'+
+        '</div>'+
+        '<div style="margin-top:12px"><label>Notes</label><textarea onchange="updateHitlist('+h.id+',\'notes\',this.value)">'+esc(h.notes||"")+'</textarea></div>'+
+      '</details>'+
+    '</div>'
+  ).join(""):'<div class="empty">No companies on the hitlist yet.</div>';
+}
 function openCustomerFromDashboard(id){
   document.querySelectorAll(".tab,.view").forEach(x=>x.classList.remove("active"));
   const tab=[...document.querySelectorAll(".tab")].find(b=>b.dataset.view==="customers");
@@ -187,7 +245,7 @@ let title="",html="";
 if(type==="customers"){title="Customers";html=db.customers.length?db.customers.map(x=>'<div class="dashboard-item"><button class="secondary" style="padding:4px 8px;margin-right:6px" onclick="openCustomerFromDashboard('+x.id+')">'+esc(x.name)+'</button><span class="badge">'+esc(x.location||"No location")+'</span><div class="muted">Owner: '+esc(x.owner||"—")+' • Follow-up: '+esc(x.follow||"—")+'</div></div>').join(""):'<div class="empty">No customers yet.</div>'}
 if(type==="opportunities"){title="Open opportunities";let rows=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage));html=rows.length?rows.map(x=>'<div class="dashboard-item"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.title)+' <span class="badge">'+esc(x.stage)+'</span><div class="muted">'+esc(x.location||"No location")+' • '+esc(x.next||"No next action")+' • '+esc(x.date||"No date")+'</div></div>').join(""):'<div class="empty">No open opportunities.</div>'}
 if(type==="marketing"){title="Marketing ideas";html=db.marketing.length?db.marketing.map(x=>'<div class="dashboard-item"><b>'+esc(x.idea)+'</b> <span class="badge">'+esc(x.status)+'</span><div class="muted">Owner: '+esc(x.owner||"—")+' • Deadline: '+esc(x.date||"—")+' • Audience: '+esc(x.audience||"—")+'</div></div>').join(""):'<div class="empty">No marketing ideas.</div>'}
-if(type==="hitlist"){title="Hitlist accounts";html=db.hitlist.length?db.hitlist.map(x=>'<div class="dashboard-item"><b>'+esc(x.company)+'</b> <span class="badge">'+esc(x.priority)+'</span><div class="muted">'+esc(x.location||"No location")+' • Next: '+esc(x.next||"—")+' • '+esc(x.date||"—")+'</div></div>').join(""):'<div class="empty">No hitlist accounts.</div>'}
+if(type==="hitlist"){title="Hitlist companies";html=db.hitlist.length?db.hitlist.map(x=>'<div class="dashboard-item"><b>'+esc(x.company)+'</b> <span class="badge">'+esc(x.status||"Not contacted")+'</span><div class="muted">'+esc(x.location||"No location")+' • Contact: '+esc(x.contact||"—")+' • Next: '+esc(x.next||"—")+'</div></div>').join(""):'<div class="empty">No hitlist companies.</div>'}
 dashboardListTitle.textContent=title;dashboardList.innerHTML=html}
 function clearDashboardList(){dashboardListTitle.textContent="Selected items";dashboardList.innerHTML='<div class="empty">Click a dashboard card to show its list here.</div>'}
 function render(){kCustomers.textContent=db.customers.length;kOpps.textContent=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage)).length;kMarketing.textContent=db.marketing.length;kHitlist.textContent=db.hitlist.length;let items=db.opportunities.filter(x=>x.next||x.date).slice(0,5);focusList.innerHTML=items.length?items.map(x=>'<div class="dashboard-item"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.next||x.title)+' <span class="muted">'+esc(x.date||"")+'</span></div>').join(""):'Add actions to build your focus list.';renderCustomers();renderOpps();renderMarketing();renderHitlist()}
