@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sales Hub</title>
+<style>
+:root{--bg:#f5f7fa;--card:#fff;--ink:#17212b;--muted:#667085;--line:#d9e0e7;--accent:#1f6f5f;--accent2:#e9f5f1;--warn:#b54708;--danger:#b42318}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#111827;color:#fff;padding:20px 26px;display:flex;justify-content:space-between;align-items:center}
+header h1{margin:0;font-size:24px}.sub{color:#cbd5e1;font-size:13px}
+nav{display:flex;gap:8px;flex-wrap:wrap}.tab{border:0;background:#273244;color:#fff;padding:9px 13px;border-radius:8px;cursor:pointer}.tab.active{background:var(--accent)}
+main{max-width:1180px;margin:24px auto;padding:0 18px}.view{display:none}.view.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.kpi b{font-size:28px;display:block}.kpi span{color:var(--muted);font-size:13px}
+h2{margin:0 0 14px}h3{margin:8px 0 12px}.muted{color:var(--muted)}label{font-size:13px;color:var(--muted);display:block;margin-bottom:5px}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:white}textarea{min-height:80px;resize:vertical}
+.row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+button.primary{background:var(--accent);color:white;border:0;border-radius:8px;padding:10px 14px;cursor:pointer}
+button.secondary{background:white;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer}
+table{width:100%;border-collapse:collapse;background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size:14px}th{background:#f8fafc}
+.check{border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;background:#fff}.check-head{display:flex;gap:10px;align-items:flex-start}.check-head input{width:auto;margin-top:3px}.how{margin:8px 0 8px 26px;background:var(--accent2);padding:10px;border-radius:8px;font-size:13px}.comment{margin-left:26px}
+.badge{display:inline-block;padding:3px 7px;border-radius:999px;background:#eef2f6;font-size:12px}.section{margin:20px 0}.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.empty{padding:22px;text-align:center;color:var(--muted)}.notice{background:#fff7ed;color:#9a3412;padding:10px 12px;border:1px solid #fed7aa;border-radius:8px;margin-bottom:16px;font-size:13px}
+@media(max-width:800px){.grid{grid-template-columns:1fr 1fr}.row,.row3{grid-template-columns:1fr}header{align-items:flex-start;gap:12px;flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+<div><h1>Sales Hub</h1><div class="sub">Account expansion • Field intelligence • Marketing execution</div></div>
+<nav>
+<button class="tab active" data-view="dashboard">Dashboard</button>
+<button class="tab" data-view="customers">Customers</button>
+<button class="tab" data-view="opportunities">Opportunities</button>
+<button class="tab" data-view="intelligence">Field Intelligence</button>
+<button class="tab" data-view="marketing">Marketing</button>
+</nav>
+</header>
+<main>
+<div class="notice">Prototype: data is saved in this browser only. Shared team data/login can be added as the next step.</div>
+
+<section id="dashboard" class="view active">
+<h2>Sales Manager Dashboard</h2>
+<div class="grid">
+<div class="card kpi"><b id="kCustomers">0</b><span>Customers</span></div>
+<div class="card kpi"><b id="kOpps">0</b><span>Open opportunities</span></div>
+<div class="card kpi"><b id="kIntel">0</b><span>Field observations</span></div>
+<div class="card kpi"><b id="kMarketing">0</b><span>Marketing ideas</span></div>
+</div>
+<div class="section card"><h3>Focus this week</h3><div id="focusList" class="muted">Add customers and actions to build your focus list.</div></div>
+</section>
+
+<section id="customers" class="view">
+<h2>Customers & Account Expansion</h2>
+<div class="card">
+<div class="row3">
+<div><label>Customer</label><input id="cName" placeholder="Customer name"></div>
+<div><label>Account owner</label><input id="cOwner" placeholder="Owner"></div>
+<div><label>Next follow-up</label><input id="cFollow" type="date"></div>
+</div>
+<div class="actions"><button class="primary" onclick="addCustomer()">Add customer</button></div>
+</div>
+<div class="section" id="customerList"></div>
+</section>
+
+<section id="opportunities" class="view">
+<h2>Opportunities</h2>
+<div class="card">
+<div class="row3">
+<div><label>Customer</label><input id="oCustomer"></div>
+<div><label>Opportunity</label><input id="oTitle"></div>
+<div><label>Estimated value</label><input id="oValue" placeholder="SEK / EUR"></div>
+<div><label>Stage</label><select id="oStage"><option>Identified</option><option>Qualified</option><option>Meeting</option><option>Proposal</option><option>Negotiation</option><option>Won</option><option>Lost</option></select></div>
+<div><label>Owner</label><input id="oOwner"></div>
+<div><label>Next action date</label><input id="oDate" type="date"></div>
+</div>
+<div style="margin-top:12px"><label>Next action</label><input id="oNext" placeholder="What happens next?"></div>
+<div class="actions"><button class="primary" onclick="addOpportunity()">Save opportunity</button></div>
+</div>
+<div class="section" id="oppList"></div>
+</section>
+
+<section id="intelligence" class="view">
+<h2>Field Intelligence</h2>
+<div class="card">
+<div class="row">
+<div><label>Customer</label><input id="iCustomer"></div>
+<div><label>Reported by</label><input id="iBy"></div>
+</div>
+<div style="margin-top:12px"><label>What did you hear or see?</label><textarea id="iText" placeholder="Example: Customer mentioned rebuilding the mixing area next year."></textarea></div>
+<div class="row" style="margin-top:12px">
+<div><label>Person spoken to</label><input id="iPerson"></div>
+<div><label>Potential timing</label><input id="iTiming" placeholder="Q2, shutdown week 12, next year..."></div>
+</div>
+<div class="actions"><button class="primary" onclick="addIntel()">Report observation</button></div>
+</div>
+<div class="section" id="intelList"></div>
+</section>
+
+<section id="marketing" class="view">
+<h2>Marketing Ideas & Execution</h2>
+<div class="card">
+<div class="row">
+<div><label>Idea</label><input id="mIdea" placeholder="Technical LinkedIn post, case study, customer event..."></div>
+<div><label>Target audience</label><input id="mAudience" placeholder="Maintenance managers, OEMs..."></div>
+</div>
+<div class="row3" style="margin-top:12px">
+<div><label>Owner</label><input id="mOwner"></div>
+<div><label>Status</label><select id="mStatus"><option>Idea</option><option>Planned</option><option>Creating</option><option>Review</option><option>Published</option></select></div>
+<div><label>Deadline</label><input id="mDate" type="date"></div>
+</div>
+<div style="margin-top:12px"><label>Why would the customer care?</label><textarea id="mWhy"></textarea></div>
+<div class="actions"><button class="primary" onclick="addMarketing()">Save marketing idea</button></div>
+</div>
+<div class="section" id="marketingList"></div>
+</section>
+</main>
+
+<script>
+const checklist=[
+{cat:"Relationships",q:"Do we know the maintenance manager?",how:"Ask your current contact who owns maintenance planning and request a natural introduction."},
+{cat:"Relationships",q:"Do we know production and operations?",how:"Ask who owns daily production performance, recurring losses and line priorities."},
+{cat:"Relationships",q:"Do we know engineering/project management?",how:"Ask who owns upgrades, CAPEX, installations and larger technical changes."},
+{cat:"Relationships",q:"Have we asked for introductions to other departments or sites?",how:"After successful work, ask who else has similar problems or equipment."},
+{cat:"Future work",q:"Do we know upcoming shutdowns?",how:"Ask about planned stops, major maintenance windows and turnaround periods over the next 6–12 months."},
+{cat:"Future work",q:"Do we know upcoming projects or upgrades?",how:"Ask what changes, rebuilds, capacity increases or installations are already being discussed."},
+{cat:"Problems",q:"Have we identified recurring equipment problems?",how:"Ask operators and maintenance what repeatedly causes downtime, manual work or frustration."},
+{cat:"Problems",q:"Have we identified competence or staffing shortages?",how:"Ask where internal teams are stretched, where contractors are hard to find, and which periods are difficult to cover."},
+{cat:"Expansion",q:"Have we checked what other Projigo services could help?",how:"Compare what the customer buys today with other competencies Projigo can provide."},
+{cat:"Expansion",q:"Have we asked for a concrete next step?",how:"Turn useful information into an action: meeting, site walk, technical review, quote or introduction."}
+];
+const DBKEY="projigo_sales_hub_v1";
+let db=JSON.parse(localStorage.getItem(DBKEY)||'{"customers":[],"opportunities":[],"intel":[],"marketing":[]}');
+function save(){localStorage.setItem(DBKEY,JSON.stringify(db));render()}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab,.view").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.view).classList.add("active")});
+function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function addCustomer(){let n=cName.value.trim();if(!n)return;db.customers.push({id:Date.now(),name:n,owner:cOwner.value,follow:cFollow.value,checks:{}});cName.value=cOwner.value=cFollow.value="";save()}
+function updCheck(cid,idx,field,val){let c=db.customers.find(x=>x.id===cid);c.checks[idx]=c.checks[idx]||{};c.checks[idx][field]=val;save()}
+function delCustomer(id){db.customers=db.customers.filter(x=>x.id!==id);save()}
+function addOpportunity(){if(!oTitle.value.trim())return;db.opportunities.push({id:Date.now(),customer:oCustomer.value,title:oTitle.value,value:oValue.value,stage:oStage.value,owner:oOwner.value,date:oDate.value,next:oNext.value});["oCustomer","oTitle","oValue","oOwner","oDate","oNext"].forEach(id=>document.getElementById(id).value="");save()}
+function addIntel(){if(!iText.value.trim())return;db.intel.push({id:Date.now(),customer:iCustomer.value,by:iBy.value,text:iText.value,person:iPerson.value,timing:iTiming.value});["iCustomer","iBy","iText","iPerson","iTiming"].forEach(id=>document.getElementById(id).value="");save()}
+function addMarketing(){if(!mIdea.value.trim())return;db.marketing.push({id:Date.now(),idea:mIdea.value,audience:mAudience.value,owner:mOwner.value,status:mStatus.value,date:mDate.value,why:mWhy.value});["mIdea","mAudience","mOwner","mDate","mWhy"].forEach(id=>document.getElementById(id).value="");save()}
+function remove(type,id){db[type]=db[type].filter(x=>x.id!==id);save()}
+function renderCustomers(){customerList.innerHTML=db.customers.length?db.customers.map(c=>{let done=checklist.filter((_,i)=>c.checks[i]?.done).length;return '<div class="card section"><div style="display:flex;justify-content:space-between;gap:10px"><div><h3>'+esc(c.name)+'</h3><div class="muted">Owner: '+esc(c.owner||"—")+' • Next follow-up: '+esc(c.follow||"—")+' • Account score: '+done+'/'+checklist.length+'</div></div><button class="secondary" onclick="delCustomer('+c.id+')">Delete</button></div>'+checklist.map((x,i)=>'<div class="check"><div class="check-head"><input type="checkbox" '+(c.checks[i]?.done?'checked':'')+' onchange="updCheck('+c.id+','+i+',\'done\',this.checked)"><div><b>'+esc(x.q)+'</b><div class="badge">'+esc(x.cat)+'</div></div></div><details class="how"><summary>How to do it</summary><div style="margin-top:6px">'+esc(x.how)+'</div></details><div class="comment"><label>Comment / evidence</label><textarea onchange="updCheck('+c.id+','+i+',\'comment\',this.value)" placeholder="What did you learn?">'+esc(c.checks[i]?.comment||"")+'</textarea></div></div>').join("")+'</div>'}).join(""):'<div class="empty">No customers yet.</div>'}
+function renderOpps(){oppList.innerHTML=db.opportunities.length?'<table><tr><th>Customer</th><th>Opportunity</th><th>Stage</th><th>Value</th><th>Next action</th><th>Owner</th><th></th></tr>'+db.opportunities.map(o=>'<tr><td>'+esc(o.customer)+'</td><td>'+esc(o.title)+'</td><td>'+esc(o.stage)+'</td><td>'+esc(o.value)+'</td><td>'+esc(o.next)+'<div class="muted">'+esc(o.date)+'</div></td><td>'+esc(o.owner)+'</td><td><button class="secondary" onclick="remove(\'opportunities\','+o.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No opportunities yet.</div>'}
+function renderIntel(){intelList.innerHTML=db.intel.length?db.intel.map(i=>'<div class="card section"><b>'+esc(i.customer||"Customer not set")+'</b><p>'+esc(i.text)+'</p><div class="muted">Reported by '+esc(i.by||"—")+' • Contact: '+esc(i.person||"—")+' • Timing: '+esc(i.timing||"—")+'</div><div class="actions"><button class="secondary" onclick="remove(\'intel\','+i.id+')">Delete</button></div></div>').join(""):'<div class="empty">No field observations yet.</div>'}
+function renderMarketing(){marketingList.innerHTML=db.marketing.length?'<table><tr><th>Idea</th><th>Audience</th><th>Status</th><th>Owner</th><th>Deadline</th><th>Why it matters</th><th></th></tr>'+db.marketing.map(m=>'<tr><td>'+esc(m.idea)+'</td><td>'+esc(m.audience)+'</td><td>'+esc(m.status)+'</td><td>'+esc(m.owner)+'</td><td>'+esc(m.date)+'</td><td>'+esc(m.why)+'</td><td><button class="secondary" onclick="remove(\'marketing\','+m.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No marketing ideas yet.</div>'}
+function render(){kCustomers.textContent=db.customers.length;kOpps.textContent=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage)).length;kIntel.textContent=db.intel.length;kMarketing.textContent=db.marketing.length;let items=db.opportunities.filter(x=>x.next||x.date).slice(0,5);focusList.innerHTML=items.length?items.map(x=>'<div style="padding:7px 0;border-bottom:1px solid #eee"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.next||x.title)+' <span class="muted">'+esc(x.date||"")+'</span></div>').join(""):"Add customers and actions to build your focus list.";renderCustomers();renderOpps();renderIntel();renderMarketing()}
+render();
+</script>
+</body>
+</html>
