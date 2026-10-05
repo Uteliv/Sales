@@ -185,6 +185,7 @@ const checklist=[
 const DBKEY="projigo_sales_hub_v1";
 let db=JSON.parse(localStorage.getItem(DBKEY)||'{"customers":[],"opportunities":[],"intel":[],"marketing":[],"hitlist":[]}');
 ["customers","opportunities","marketing","hitlist"].forEach(k=>{if(!db[k])db[k]=[]});
+db.hitlist.forEach(h=>{if(!h.contacts)h.contacts=[];if(h.contact&&!h.contacts.length)h.contacts.push({id:Date.now()+Math.random(),name:h.contact,role:"",email:h.email||"",phone:h.phone||""})});
 function save(){localStorage.setItem(DBKEY,JSON.stringify(db));render()}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab,.view").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.view).classList.add("active")});
 function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
@@ -241,7 +242,7 @@ function addHitlist(){
   if(!company)return;
   db.hitlist.push({
     id:Date.now(), company,
-    contact:"", email:"", phone:"", location:"",
+    contacts:[], location:"",
     status:"Not contacted", does:"", owner:"",
     knownBy:"", mayKnow:"", targetPerson:"",
     next:"", date:"", notes:""
@@ -252,6 +253,25 @@ function addHitlist(){
 function updateHitlist(id,field,value){
   let h=db.hitlist.find(x=>x.id===id); if(!h)return;
   h[field]=value; save();
+}
+function addHitlistContact(id){
+  let h=db.hitlist.find(x=>x.id===id); if(!h)return;
+  h.contacts=h.contacts||[];
+  let name=document.getElementById("hcName"+id).value.trim();
+  if(!name)return;
+  h.contacts.push({
+    id:Date.now(),
+    name,
+    role:document.getElementById("hcRole"+id).value,
+    email:document.getElementById("hcEmail"+id).value,
+    phone:document.getElementById("hcPhone"+id).value
+  });
+  save();
+}
+function removeHitlistContact(id,cid){
+  let h=db.hitlist.find(x=>x.id===id); if(!h)return;
+  h.contacts=(h.contacts||[]).filter(x=>x.id!==cid);
+  save();
 }
 function remove(type,id){db[type]=db[type].filter(x=>x.id!==id);save()}
 
@@ -296,15 +316,16 @@ function renderHitlist(){
   hitlistList.innerHTML=rows.length?rows.map(h=>
     '<div class="card section" id="hitlist-'+h.id+'">'+
       '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">'+
-        '<div><h3>'+esc(h.company)+'</h3><div class="muted">'+esc(h.location||"No location")+' • '+esc(h.status||"Not contacted")+(h.contact?' • '+esc(h.contact):'')+'</div></div>'+
+        '<div><h3>'+esc(h.company)+'</h3><div class="muted">'+esc(h.location||"No location")+' • '+esc(h.status||"Not contacted")+((h.contacts&&h.contacts.length)?' • '+h.contacts.length+' contact'+(h.contacts.length===1?'':'s'):'')+'</div></div>'+
         '<button class="secondary" onclick="remove(\'hitlist\','+h.id+')">Delete</button>'+
       '</div>'+
       '<details style="margin-top:12px" open>'+
         '<summary><b>Company profile</b></summary>'+
+        '<div class="check" style="margin-top:12px"><h3>Contacts</h3>'+
+          ((h.contacts&&h.contacts.length)?h.contacts.map(p=>'<div class="dashboard-item"><b>'+esc(p.name)+'</b>'+(p.role?' — '+esc(p.role):'')+'<div class="muted">'+(p.email?'Email: '+esc(p.email):'')+(p.email&&p.phone?' • ':'')+(p.phone?'Phone: '+esc(p.phone):'')+'</div><button class="secondary" style="float:right;padding:4px 8px" onclick="removeHitlistContact('+h.id+','+p.id+')">×</button></div>').join(""):'<div class="muted">No contacts added yet.</div>')+
+          '<div class="row" style="margin-top:12px"><div><label>Name</label><input id="hcName'+h.id+'" placeholder="Name"></div><div><label>Role / Function</label><input id="hcRole'+h.id+'" placeholder="Maintenance, Automation, Purchasing..."></div><div><label>Email</label><input id="hcEmail'+h.id+'" type="email" placeholder="name@company.com"></div><div><label>Phone</label><input id="hcPhone'+h.id+'" type="tel" placeholder="+46 ..."></div></div>'+
+          '<div class="actions"><button class="primary" onclick="addHitlistContact('+h.id+')">Add contact</button></div></div>'+
         '<div class="row3" style="margin-top:12px">'+
-          '<div><label>Main contact</label><input value="'+esc(h.contact||"")+'" onchange="updateHitlist('+h.id+',\'contact\',this.value)"></div>'+
-          '<div><label>Email</label><input type="email" value="'+esc(h.email||"")+'" onchange="updateHitlist('+h.id+',\'email\',this.value)"></div>'+
-          '<div><label>Phone</label><input value="'+esc(h.phone||"")+'" onchange="updateHitlist('+h.id+',\'phone\',this.value)"></div>'+
           '<div><label>Location</label><input value="'+esc(h.location||"")+'" onchange="updateHitlist('+h.id+',\'location\',this.value)"></div>'+
           '<div><label>Status</label><select onchange="updateHitlist('+h.id+',\'status\',this.value)">'+
             ['Not contacted','Warm path found','Introduction requested','Contacted','Meeting booked','Opportunity','Not relevant'].map(s=>'<option '+((h.status||'Not contacted')===s?'selected':'')+'>'+s+'</option>').join('')+
@@ -345,7 +366,7 @@ let title="",html="";
 if(type==="customers"){title="Customers";html=db.customers.length?db.customers.map(x=>'<div class="dashboard-item"><button class="secondary" style="padding:4px 8px;margin-right:6px" onclick="openCustomerFromDashboard('+x.id+')">'+esc(x.name)+'</button><span class="badge">'+esc(x.location||"No location")+'</span><div class="muted">Owner: '+esc(x.owner||"—")+' • Follow-up: '+esc(x.follow||"—")+'</div></div>').join(""):'<div class="empty">No customers yet.</div>'}
 if(type==="opportunities"){title="Open opportunities";let rows=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage));html=rows.length?rows.map(x=>'<div class="dashboard-item"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.title)+' <span class="badge">'+esc(x.stage)+'</span><div class="muted">'+esc(x.location||"No location")+' • '+esc(x.next||"No next action")+' • '+esc(x.date||"No date")+'</div></div>').join(""):'<div class="empty">No open opportunities.</div>'}
 if(type==="marketing"){title="Marketing ideas";html=db.marketing.length?db.marketing.map(x=>'<div class="dashboard-item"><b>'+esc(x.idea)+'</b> <span class="badge">'+esc(x.status)+'</span><div class="muted">Owner: '+esc(x.owner||"—")+' • Deadline: '+esc(x.date||"—")+' • Audience: '+esc(x.audience||"—")+'</div></div>').join(""):'<div class="empty">No marketing ideas.</div>'}
-if(type==="hitlist"){title="Hitlist companies";html=db.hitlist.length?db.hitlist.map(x=>'<div class="dashboard-item"><b>'+esc(x.company)+'</b> <span class="badge">'+esc(x.status||"Not contacted")+'</span><div class="muted">'+esc(x.location||"No location")+' • Contact: '+esc(x.contact||"—")+' • Next: '+esc(x.next||"—")+'</div></div>').join(""):'<div class="empty">No hitlist companies.</div>'}
+if(type==="hitlist"){title="Hitlist companies";html=db.hitlist.length?db.hitlist.map(x=>'<div class="dashboard-item"><b>'+esc(x.company)+'</b> <span class="badge">'+esc(x.status||"Not contacted")+'</span><div class="muted">'+esc(x.location||"No location")+' • Contacts: '+((x.contacts&&x.contacts.length)||0)+' • Next: '+esc(x.next||"—")+'</div></div>').join(""):'<div class="empty">No hitlist companies.</div>'}
 dashboardListTitle.textContent=title;dashboardList.innerHTML=html}
 function clearDashboardList(){dashboardListTitle.textContent="Selected items";dashboardList.innerHTML='<div class="empty">Click a dashboard card to show its list here.</div>'}
 let calendarCursor=new Date(); calendarCursor.setDate(1);
