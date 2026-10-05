@@ -113,17 +113,40 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
 </main>
 <script>
 const checklist=[
-{cat:"Relationships",q:"Do we know the maintenance manager?",how:"Ask your current contact who owns maintenance planning and request a natural introduction."},
-{cat:"Relationships",q:"Do we know production and operations?",how:"Ask who owns daily production performance, recurring losses and line priorities."},
-{cat:"Relationships",q:"Do we know engineering/project management?",how:"Ask who owns upgrades, CAPEX, installations and larger technical changes."},
-{cat:"Relationships",q:"Have we asked for introductions to other departments or sites?",how:"After successful work, ask who else has similar problems or equipment."},
-{cat:"Future work",q:"Do we know upcoming shutdowns?",how:"Ask about planned stops, major maintenance windows and turnaround periods over the next 6–12 months."},
-{cat:"Future work",q:"Do we know upcoming projects or upgrades?",how:"Ask what changes, rebuilds, capacity increases or installations are already being discussed."},
-{cat:"Problems",q:"Have we identified recurring equipment problems?",how:"Ask operators and maintenance what repeatedly causes downtime, manual work or frustration."},
-{cat:"Problems",q:"Have we identified competence or staffing shortages?",how:"Ask where internal teams are stretched, where contractors are hard to find, and which periods are difficult to cover."},
-{cat:"Expansion",q:"Have we checked what other Projigo services could help?",how:"Compare what the customer buys today with other competencies Projigo can provide."},
-{cat:"Expansion",q:"Have we asked for a concrete next step?",how:"Turn useful information into an action: meeting, site walk, technical review, quote or introduction."}
-];
+{cat:"Relationships",q:"Do we know the maintenance manager?",how:"Identify who owns maintenance planning, contractor support and reliability. Ask your current contact for an introduction."},
+{cat:"Relationships",q:"Do we know the automation manager?",how:"Identify who owns PLC, SCADA, controls, instrumentation and automation changes. Ask what automation work is handled internally versus externally."},
+{cat:"Relationships",q:"Do we know the production manager?",how:"Find the person responsible for production output, efficiency, downtime and daily operational priorities."},
+{cat:"Relationships",q:"Do we know the engineering or project manager?",how:"Identify who owns CAPEX, installations, rebuilds, upgrades and larger technical changes."},
+{cat:"Relationships",q:"Do we know the technical manager or site manager?",how:"Map the person with overall technical or site responsibility and understand their main priorities."},
+{cat:"Relationships",q:"Do we know purchasing or procurement?",how:"Understand who handles supplier approval, framework agreements, purchase orders and commercial conditions."},
+{cat:"Relationships",q:"Do we know the spare-parts or warehouse responsible person?",how:"Ask who manages critical spares, obsolete parts and emergency availability."},
+{cat:"Relationships",q:"Do we know the operators or team leaders closest to the equipment?",how:"Build relationships with the people who see recurring problems and workarounds every day."},
+{cat:"Relationships",q:"Have we mapped who influences contractor and supplier selection?",how:"Ask who recommends suppliers, who approves them and who actually calls when support is needed."},
+{cat:"Relationships",q:"Have we asked for introductions to other departments or sites?",how:"After successful work, ask who else inside the group has similar equipment, projects or problems."},
+
+{cat:"Future work",q:"Do we know upcoming shutdowns and planned stops?",how:"Ask for planned maintenance windows and shutdown periods over the next 6–12 months, including likely external resource needs."},
+{cat:"Future work",q:"Do we know upcoming projects, rebuilds or upgrades?",how:"Ask what capacity changes, new lines, equipment replacements, relocations or modifications are being discussed."},
+{cat:"Future work",q:"Do we know upcoming automation or control-system changes?",how:"Ask about PLC/SCADA migrations, obsolete controls, instrumentation upgrades, network changes and OEM automation projects."},
+{cat:"Future work",q:"Do we know if new equipment is being installed?",how:"Ask about upcoming OEM deliveries and whether installation, commissioning, mechanical or electrical support will be required."},
+{cat:"Future work",q:"Do we know their maintenance backlog?",how:"Ask what work keeps being postponed because of time, competence, resources or production constraints."},
+{cat:"Future work",q:"Do we know their resource needs for the next 3–12 months?",how:"Ask where they expect workload peaks, vacations, shutdown support, projects or temporary competence gaps."},
+
+{cat:"Problems",q:"Have we identified recurring mechanical equipment problems?",how:"Ask what repeatedly leaks, vibrates, wears, blocks, breaks or causes unplanned intervention."},
+{cat:"Problems",q:"Have we identified recurring automation or instrumentation problems?",how:"Ask about recurring alarms, sensor failures, unstable control loops, obsolete components and manual workarounds."},
+{cat:"Problems",q:"Have we identified the equipment causing the most downtime?",how:"Ask which machines or process areas create the biggest production losses and why."},
+{cat:"Problems",q:"Have we identified competence or staffing shortages?",how:"Ask which technical skills are difficult to recruit, retain or cover internally."},
+{cat:"Problems",q:"Have we identified work they currently struggle to source externally?",how:"Ask where existing contractors or OEMs are slow, expensive, unavailable or missing competence."},
+{cat:"Problems",q:"Do we know where they depend heavily on an OEM?",how:"Identify areas where OEM dependency creates long lead times, high cost or limited flexibility."},
+{cat:"Problems",q:"Do we know their obsolete or difficult-to-source equipment?",how:"Ask about old PLCs, drives, valves, pumps, instruments and other components becoming difficult to maintain."},
+
+{cat:"Expansion",q:"Have we reviewed what Projigo currently supplies to this site?",how:"List the work already bought from Projigo and compare it with the site's wider technical needs."},
+{cat:"Expansion",q:"Have we identified Projigo services they are not currently using?",how:"Look for adjacent mechanical, electrical, automation, maintenance, project and technical-resource needs."},
+{cat:"Expansion",q:"Can we support another department at the same site?",how:"Use existing trust to identify another department where Projigo can solve a relevant problem."},
+{cat:"Expansion",q:"Can we support another site in the same company or group?",how:"Ask whether sister sites have similar equipment, shutdowns, projects or resource challenges."},
+{cat:"Expansion",q:"Can the customer introduce us to another company?",how:"Ask trusted contacts whether suppliers, partners, OEMs or industry colleagues may have similar needs."},
+{cat:"Expansion",q:"Have we identified a concrete opportunity from what we learned?",how:"Convert useful customer knowledge into a defined potential job, project, resource need or technical review."},
+{cat:"Expansion",q:"Have we agreed a concrete next step?",how:"Set a specific action such as an introduction, site walk, technical meeting, quotation, resource proposal or follow-up date."}
+]
 const DBKEY="projigo_sales_hub_v1";
 let db=JSON.parse(localStorage.getItem(DBKEY)||'{"customers":[],"opportunities":[],"intel":[],"marketing":[],"hitlist":[]}');
 ["customers","opportunities","marketing","hitlist"].forEach(k=>{if(!db[k])db[k]=[]});
