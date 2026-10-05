@@ -3,26 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sales Hub</title>
+<title>Projigo Sales Hub</title>
 <style>
-:root{--bg:#f3f4f6;--card:#ffffff;--ink:#111111;--muted:#6b7280;--line:#d7d9dd;--accent:#9ccf3b;--accent-dark:#74a824;--accent2:#f3f9e8;--charcoal:#171717;--warn:#b54708;--danger:#b42318}
+:root{--bg:#f3f4f6;--card:#fff;--ink:#111;--muted:#6b7280;--line:#d7d9dd;--accent:#f28c28;--accent-dark:#d96f0b;--accent2:#fff3e6;--charcoal:#171717;--danger:#b42318}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink)}
 header{background:var(--charcoal);color:#fff;padding:18px 26px;display:flex;justify-content:space-between;align-items:center;border-bottom:4px solid var(--accent)}
-header h1{margin:0;font-size:21px;letter-spacing:.2px}.brand{display:flex;align-items:center;gap:16px}.brand-logo{height:54px;width:auto;display:block;background:#fff;border-radius:6px;padding:4px}.sub{color:#d1d5db;font-size:13px;margin-top:3px}
-nav{display:flex;gap:8px;flex-wrap:wrap}.tab{border:1px solid #3b3b3b;background:#242424;color:#fff;padding:9px 13px;border-radius:7px;cursor:pointer;transition:.15s}.tab:hover{border-color:var(--accent);color:var(--accent)}.tab.active{background:var(--accent);border-color:var(--accent);color:#111;font-weight:700}
-main{max-width:1180px;margin:24px auto;padding:0 18px}.view{display:none}.view.active{display:block}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.035)}
-.kpi{border-top:4px solid var(--accent)}.kpi b{font-size:30px;display:block;color:var(--charcoal)}.kpi span{color:var(--muted);font-size:13px}
+.brand{display:flex;align-items:center;gap:16px}.brand-logo{height:54px;width:auto;display:block;background:#fff;border-radius:6px;padding:4px}
+header h1{margin:0;font-size:21px}.sub{color:#d1d5db;font-size:13px;margin-top:3px}
+nav{display:flex;gap:8px;flex-wrap:wrap}.tab{border:1px solid #3b3b3b;background:#242424;color:#fff;padding:9px 13px;border-radius:7px;cursor:pointer}.tab:hover{border-color:var(--accent);color:var(--accent)}.tab.active{background:var(--accent);border-color:var(--accent);color:#111;font-weight:700}
+main{max-width:1200px;margin:24px auto;padding:0 18px}.view{display:none}.view.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.035)}
+.kpi{border-top:4px solid var(--accent);cursor:pointer;transition:.15s}.kpi:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(0,0,0,.08)}.kpi b{font-size:30px;display:block}.kpi span{color:var(--muted);font-size:13px}
 h2{margin:0 0 14px}h3{margin:8px 0 12px}.muted{color:var(--muted)}label{font-size:13px;color:var(--muted);display:block;margin-bottom:5px}
-input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:white}textarea{min-height:80px;resize:vertical}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}textarea{min-height:80px;resize:vertical}
 .row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 button.primary{background:var(--accent);color:#111;border:0;border-radius:7px;padding:10px 14px;cursor:pointer;font-weight:700}button.primary:hover{background:var(--accent-dark)}
-button.secondary{background:white;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer}
-table{width:100%;border-collapse:collapse;background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size:14px}th{background:#f4f5f6;border-bottom:2px solid var(--accent)}
-.check{border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;background:#fff}.check-head{display:flex;gap:10px;align-items:flex-start}.check-head input{width:auto;margin-top:3px}.how{margin:8px 0 8px 26px;background:var(--accent2);padding:10px;border-radius:8px;font-size:13px}.comment{margin-left:26px}
-.badge{display:inline-block;padding:3px 7px;border-radius:999px;background:var(--accent2);border:1px solid #dcebbd;font-size:12px}.section{margin:20px 0}.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.empty{padding:22px;text-align:center;color:var(--muted)}.notice{background:#fff7ed;color:#9a3412;padding:10px 12px;border:1px solid #fed7aa;border-radius:8px;margin-bottom:16px;font-size:13px}
-@media(max-width:800px){.grid{grid-template-columns:1fr 1fr}.row,.row3{grid-template-columns:1fr}header{align-items:flex-start;gap:12px;flex-direction:column}}
+button.secondary{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line)}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size:14px}th{background:#f4f5f6;border-bottom:2px solid var(--accent)}
+.check{border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;background:#fff}.check-head{display:flex;gap:10px;align-items:flex-start}.check-head input{width:auto;margin-top:3px}
+.how{margin:8px 0 8px 26px;background:var(--accent2);padding:10px;border-radius:8px;font-size:13px}.comment{margin-left:26px}
+.badge{display:inline-block;padding:3px 7px;border-radius:999px;background:var(--accent2);border:1px solid #ffd3a8;font-size:12px;margin-left:6px}
+.section{margin:20px 0}.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.empty{padding:22px;text-align:center;color:var(--muted)}
+.notice{background:#fff7ed;color:#9a3412;padding:10px 12px;border:1px solid #fed7aa;border-radius:8px;margin-bottom:16px;font-size:13px}
+.dashboard-list{margin-top:18px}.dashboard-list h3{display:flex;justify-content:space-between;align-items:center}.dashboard-item{padding:10px 0;border-bottom:1px solid #eee}.dashboard-item:last-child{border-bottom:0}
+@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.row,.row3{grid-template-columns:1fr}header{align-items:flex-start;gap:12px;flex-direction:column}}
 </style>
 </head>
 <body>
@@ -43,98 +47,87 @@ table{width:100%;border-collapse:collapse;background:white;border:1px solid var(
 <section id="dashboard" class="view active">
 <h2>Sales Manager Dashboard</h2>
 <div class="grid">
-<div class="card kpi"><b id="kCustomers">0</b><span>Customers</span></div>
-<div class="card kpi"><b id="kOpps">0</b><span>Open opportunities</span></div>
-<div class="card kpi"><b id="kIntel">0</b><span>Field observations</span></div>
-<div class="card kpi"><b id="kMarketing">0</b><span>Marketing ideas</span></div>
+<div class="card kpi" onclick="showDashboardList('customers')"><b id="kCustomers">0</b><span>Customers</span></div>
+<div class="card kpi" onclick="showDashboardList('opportunities')"><b id="kOpps">0</b><span>Open opportunities</span></div>
+<div class="card kpi" onclick="showDashboardList('intel')"><b id="kIntel">0</b><span>Field observations</span></div>
+<div class="card kpi" onclick="showDashboardList('marketing')"><b id="kMarketing">0</b><span>Marketing ideas</span></div>
+<div class="card kpi" onclick="showDashboardList('hitlist')"><b id="kHitlist">0</b><span>Hitlist accounts</span></div>
 </div>
-<div class="section card"><h3>Focus this week</h3><div id="focusList" class="muted">Add customers and actions to build your focus list.</div></div>
+<div class="section card"><h3>Focus this week</h3><div id="focusList" class="muted">Add actions to build your focus list.</div></div>
+<div class="section card dashboard-list"><h3><span id="dashboardListTitle">Selected items</span><button class="secondary" onclick="clearDashboardList()">Clear</button></h3><div id="dashboardList"><div class="empty">Click a dashboard card to show its list here.</div></div></div>
 </section>
 
 <section id="customers" class="view">
 <h2>Customers & Account Expansion</h2>
-<div class="card">
-<div class="row3">
+<div class="card"><div class="row3">
 <div><label>Customer</label><input id="cName" placeholder="Customer name"></div>
+<div><label>Location / Site</label><input id="cLocation" placeholder="City, plant or site"></div>
 <div><label>Account owner</label><input id="cOwner" placeholder="Owner"></div>
 <div><label>Next follow-up</label><input id="cFollow" type="date"></div>
-</div>
-<div class="actions"><button class="primary" onclick="addCustomer()">Add customer</button></div>
-</div>
+</div><div class="actions"><button class="primary" onclick="addCustomer()">Add customer</button></div></div>
+<div class="section card"><div class="row"><div><label>Filter by location</label><input id="customerLocationFilter" placeholder="Type a location..." oninput="renderCustomers()"></div><div><label>Sort</label><select id="customerSort" onchange="renderCustomers()"><option value="name">Customer A–Z</option><option value="location">Location A–Z</option><option value="follow">Next follow-up</option></select></div></div></div>
 <div class="section" id="customerList"></div>
 </section>
 
 <section id="opportunities" class="view">
 <h2>Opportunities</h2>
-<div class="card">
-<div class="row3">
+<div class="card"><div class="row3">
 <div><label>Customer</label><input id="oCustomer"></div>
+<div><label>Location / Site</label><input id="oLocation" placeholder="City, plant or site"></div>
 <div><label>Opportunity</label><input id="oTitle"></div>
 <div><label>Estimated value</label><input id="oValue" placeholder="SEK / EUR"></div>
 <div><label>Stage</label><select id="oStage"><option>Identified</option><option>Qualified</option><option>Meeting</option><option>Proposal</option><option>Negotiation</option><option>Won</option><option>Lost</option></select></div>
 <div><label>Owner</label><input id="oOwner"></div>
 <div><label>Next action date</label><input id="oDate" type="date"></div>
-</div>
-<div style="margin-top:12px"><label>Next action</label><input id="oNext" placeholder="What happens next?"></div>
-<div class="actions"><button class="primary" onclick="addOpportunity()">Save opportunity</button></div>
-</div>
+</div><div style="margin-top:12px"><label>Next action</label><input id="oNext" placeholder="What happens next?"></div><div class="actions"><button class="primary" onclick="addOpportunity()">Save opportunity</button></div></div>
+<div class="section card"><div class="row"><div><label>Filter by location</label><input id="oppLocationFilter" placeholder="Type a location..." oninput="renderOpps()"></div><div><label>Sort</label><select id="oppSort" onchange="renderOpps()"><option value="date">Next action date</option><option value="location">Location A–Z</option><option value="customer">Customer A–Z</option></select></div></div></div>
 <div class="section" id="oppList"></div>
 </section>
 
 <section id="intelligence" class="view">
 <h2>Field Intelligence</h2>
-<div class="card">
-<div class="row">
+<div class="card"><div class="row3">
 <div><label>Customer</label><input id="iCustomer"></div>
+<div><label>Location / Site</label><input id="iLocation" placeholder="City, plant or site"></div>
 <div><label>Reported by</label><input id="iBy"></div>
 </div>
 <div style="margin-top:12px"><label>What did you hear or see?</label><textarea id="iText" placeholder="Example: Customer mentioned rebuilding the mixing area next year."></textarea></div>
-<div class="row" style="margin-top:12px">
-<div><label>Person spoken to</label><input id="iPerson"></div>
-<div><label>Potential timing</label><input id="iTiming" placeholder="Q2, shutdown week 12, next year..."></div>
-</div>
-<div class="actions"><button class="primary" onclick="addIntel()">Report observation</button></div>
-</div>
+<div class="row" style="margin-top:12px"><div><label>Person spoken to</label><input id="iPerson"></div><div><label>Potential timing</label><input id="iTiming" placeholder="Q2, shutdown week 12, next year..."></div></div>
+<div class="actions"><button class="primary" onclick="addIntel()">Report observation</button></div></div>
+<div class="section card"><div><label>Filter by location</label><input id="intelLocationFilter" placeholder="Type a location..." oninput="renderIntel()"></div></div>
 <div class="section" id="intelList"></div>
 </section>
 
 <section id="marketing" class="view">
 <h2>Marketing Ideas & Execution</h2>
-<div class="card">
-<div class="row">
+<div class="card"><div class="row">
 <div><label>Idea</label><input id="mIdea" placeholder="Technical LinkedIn post, case study, customer event..."></div>
 <div><label>Target audience</label><input id="mAudience" placeholder="Maintenance managers, OEMs..."></div>
 </div>
-<div class="row3" style="margin-top:12px">
-<div><label>Owner</label><input id="mOwner"></div>
-<div><label>Status</label><select id="mStatus"><option>Idea</option><option>Planned</option><option>Creating</option><option>Review</option><option>Published</option></select></div>
-<div><label>Deadline</label><input id="mDate" type="date"></div>
-</div>
+<div class="row3" style="margin-top:12px"><div><label>Owner</label><input id="mOwner"></div><div><label>Status</label><select id="mStatus"><option>Idea</option><option>Planned</option><option>Creating</option><option>Review</option><option>Published</option></select></div><div><label>Deadline</label><input id="mDate" type="date"></div></div>
 <div style="margin-top:12px"><label>Why would the customer care?</label><textarea id="mWhy"></textarea></div>
-<div class="actions"><button class="primary" onclick="addMarketing()">Save marketing idea</button></div>
-</div>
+<div class="actions"><button class="primary" onclick="addMarketing()">Save marketing idea</button></div></div>
 <div class="section" id="marketingList"></div>
 </section>
 
 <section id="hitlist" class="view">
 <h2>Sales Hitlist</h2>
-<div class="card">
-<div class="row3">
+<div class="card"><div class="row3">
 <div><label>Company / Account</label><input id="hCompany" placeholder="Customer or target account"></div>
+<div><label>Location / Site</label><input id="hLocation" placeholder="City, plant or site"></div>
 <div><label>Owner</label><input id="hOwner" placeholder="Responsible person"></div>
 <div><label>Priority</label><select id="hPriority"><option>High</option><option>Medium</option><option>Low</option></select></div>
 <div><label>Relationship status</label><select id="hRelation"><option>Strong</option><option>Known contact</option><option>Weak</option><option>No active contact</option></select></div>
 <div><label>Next follow-up</label><input id="hDate" type="date"></div>
-<div><label>Potential</label><input id="hPotential" placeholder="High / project / staffing / shutdown..."></div>
+<div><label>Potential</label><input id="hPotential" placeholder="Project / staffing / shutdown..."></div>
 </div>
-<div style="margin-top:12px"><label>Why is this account on the hitlist?</label><textarea id="hReason" placeholder="Why this account matters, what we know, and what opportunity we believe exists."></textarea></div>
-<div style="margin-top:12px"><label>Next move</label><input id="hNext" placeholder="Introduction, meeting, site visit, follow-up, proposal..."></div>
-<div class="actions"><button class="primary" onclick="addHitlist()">Add to hitlist</button></div>
-</div>
+<div style="margin-top:12px"><label>Why is this account on the hitlist?</label><textarea id="hReason"></textarea></div>
+<div style="margin-top:12px"><label>Next move</label><input id="hNext" placeholder="Introduction, meeting, site visit, follow-up..."></div>
+<div class="actions"><button class="primary" onclick="addHitlist()">Add to hitlist</button></div></div>
+<div class="section card"><div class="row"><div><label>Filter by location</label><input id="hitlistLocationFilter" placeholder="Type a location..." oninput="renderHitlist()"></div><div><label>Sort</label><select id="hitlistSort" onchange="renderHitlist()"><option value="priority">Priority</option><option value="location">Location A–Z</option><option value="company">Account A–Z</option><option value="date">Follow-up date</option></select></div></div></div>
 <div class="section" id="hitlistList"></div>
 </section>
 </main>
-
 <script>
 const checklist=[
 {cat:"Relationships",q:"Do we know the maintenance manager?",how:"Ask your current contact who owns maintenance planning and request a natural introduction."},
@@ -149,23 +142,40 @@ const checklist=[
 {cat:"Expansion",q:"Have we asked for a concrete next step?",how:"Turn useful information into an action: meeting, site walk, technical review, quote or introduction."}
 ];
 const DBKEY="projigo_sales_hub_v1";
-let db=JSON.parse(localStorage.getItem(DBKEY)||'{"customers":[],"opportunities":[],"intel":[],"marketing":[],"hitlist":[]}'); if(!db.hitlist)db.hitlist=[];
+let db=JSON.parse(localStorage.getItem(DBKEY)||'{"customers":[],"opportunities":[],"intel":[],"marketing":[],"hitlist":[]}');
+["customers","opportunities","intel","marketing","hitlist"].forEach(k=>{if(!db[k])db[k]=[]});
 function save(){localStorage.setItem(DBKEY,JSON.stringify(db));render()}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab,.view").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.view).classList.add("active")});
 function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-function addCustomer(){let n=cName.value.trim();if(!n)return;db.customers.push({id:Date.now(),name:n,owner:cOwner.value,follow:cFollow.value,checks:{}});cName.value=cOwner.value=cFollow.value="";save()}
+function addCustomer(){let n=cName.value.trim();if(!n)return;db.customers.push({id:Date.now(),name:n,location:cLocation.value,owner:cOwner.value,follow:cFollow.value,checks:{}});cName.value=cLocation.value=cOwner.value=cFollow.value="";save()}
 function updCheck(cid,idx,field,val){let c=db.customers.find(x=>x.id===cid);c.checks[idx]=c.checks[idx]||{};c.checks[idx][field]=val;save()}
 function delCustomer(id){db.customers=db.customers.filter(x=>x.id!==id);save()}
-function addOpportunity(){if(!oTitle.value.trim())return;db.opportunities.push({id:Date.now(),customer:oCustomer.value,title:oTitle.value,value:oValue.value,stage:oStage.value,owner:oOwner.value,date:oDate.value,next:oNext.value});["oCustomer","oTitle","oValue","oOwner","oDate","oNext"].forEach(id=>document.getElementById(id).value="");save()}
-function addIntel(){if(!iText.value.trim())return;db.intel.push({id:Date.now(),customer:iCustomer.value,by:iBy.value,text:iText.value,person:iPerson.value,timing:iTiming.value});["iCustomer","iBy","iText","iPerson","iTiming"].forEach(id=>document.getElementById(id).value="");save()}
+function addOpportunity(){if(!oTitle.value.trim())return;db.opportunities.push({id:Date.now(),customer:oCustomer.value,location:oLocation.value,title:oTitle.value,value:oValue.value,stage:oStage.value,owner:oOwner.value,date:oDate.value,next:oNext.value});["oCustomer","oLocation","oTitle","oValue","oOwner","oDate","oNext"].forEach(id=>document.getElementById(id).value="");save()}
+function addIntel(){if(!iText.value.trim())return;db.intel.push({id:Date.now(),customer:iCustomer.value,location:iLocation.value,by:iBy.value,text:iText.value,person:iPerson.value,timing:iTiming.value});["iCustomer","iLocation","iBy","iText","iPerson","iTiming"].forEach(id=>document.getElementById(id).value="");save()}
 function addMarketing(){if(!mIdea.value.trim())return;db.marketing.push({id:Date.now(),idea:mIdea.value,audience:mAudience.value,owner:mOwner.value,status:mStatus.value,date:mDate.value,why:mWhy.value});["mIdea","mAudience","mOwner","mDate","mWhy"].forEach(id=>document.getElementById(id).value="");save()}
-function addHitlist(){if(!hCompany.value.trim())return;db.hitlist.push({id:Date.now(),company:hCompany.value,owner:hOwner.value,priority:hPriority.value,relation:hRelation.value,date:hDate.value,potential:hPotential.value,reason:hReason.value,next:hNext.value});["hCompany","hOwner","hDate","hPotential","hReason","hNext"].forEach(id=>document.getElementById(id).value="");save()}
+function addHitlist(){if(!hCompany.value.trim())return;db.hitlist.push({id:Date.now(),company:hCompany.value,location:hLocation.value,owner:hOwner.value,priority:hPriority.value,relation:hRelation.value,date:hDate.value,potential:hPotential.value,reason:hReason.value,next:hNext.value});["hCompany","hLocation","hOwner","hDate","hPotential","hReason","hNext"].forEach(id=>document.getElementById(id).value="");save()}
 function remove(type,id){db[type]=db[type].filter(x=>x.id!==id);save()}
-function renderCustomers(){customerList.innerHTML=db.customers.length?db.customers.map(c=>{let done=checklist.filter((_,i)=>c.checks[i]?.done).length;return '<div class="card section"><div style="display:flex;justify-content:space-between;gap:10px"><div><h3>'+esc(c.name)+'</h3><div class="muted">Owner: '+esc(c.owner||"—")+' • Next follow-up: '+esc(c.follow||"—")+' • Account score: '+done+'/'+checklist.length+'</div></div><button class="secondary" onclick="delCustomer('+c.id+')">Delete</button></div>'+checklist.map((x,i)=>'<div class="check"><div class="check-head"><input type="checkbox" '+(c.checks[i]?.done?'checked':'')+' onchange="updCheck('+c.id+','+i+',\'done\',this.checked)"><div><b>'+esc(x.q)+'</b><div class="badge">'+esc(x.cat)+'</div></div></div><details class="how"><summary>How to do it</summary><div style="margin-top:6px">'+esc(x.how)+'</div></details><div class="comment"><label>Comment / evidence</label><textarea onchange="updCheck('+c.id+','+i+',\'comment\',this.value)" placeholder="What did you learn?">'+esc(c.checks[i]?.comment||"")+'</textarea></div></div>').join("")+'</div>'}).join(""):'<div class="empty">No customers yet.</div>'}
-function renderOpps(){oppList.innerHTML=db.opportunities.length?'<table><tr><th>Customer</th><th>Opportunity</th><th>Stage</th><th>Value</th><th>Next action</th><th>Owner</th><th></th></tr>'+db.opportunities.map(o=>'<tr><td>'+esc(o.customer)+'</td><td>'+esc(o.title)+'</td><td>'+esc(o.stage)+'</td><td>'+esc(o.value)+'</td><td>'+esc(o.next)+'<div class="muted">'+esc(o.date)+'</div></td><td>'+esc(o.owner)+'</td><td><button class="secondary" onclick="remove(\'opportunities\','+o.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No opportunities yet.</div>'}
-function renderIntel(){intelList.innerHTML=db.intel.length?db.intel.map(i=>'<div class="card section"><b>'+esc(i.customer||"Customer not set")+'</b><p>'+esc(i.text)+'</p><div class="muted">Reported by '+esc(i.by||"—")+' • Contact: '+esc(i.person||"—")+' • Timing: '+esc(i.timing||"—")+'</div><div class="actions"><button class="secondary" onclick="remove(\'intel\','+i.id+')">Delete</button></div></div>').join(""):'<div class="empty">No field observations yet.</div>'}
+
+function renderCustomers(){
+let filter=(customerLocationFilter?.value||"").toLowerCase(),sort=customerSort?.value||"name";
+let rows=[...db.customers].filter(c=>(c.location||"").toLowerCase().includes(filter));
+rows.sort((a,b)=>sort==="location"?(a.location||"").localeCompare(b.location||""):sort==="follow"?(a.follow||"9999").localeCompare(b.follow||"9999"):(a.name||"").localeCompare(b.name||""));
+customerList.innerHTML=rows.length?rows.map(c=>{let done=checklist.filter((_,i)=>c.checks?.[i]?.done).length;return '<div class="card section"><div style="display:flex;justify-content:space-between;gap:10px"><div><h3>'+esc(c.name)+'</h3><div class="muted">Location: '+esc(c.location||"—")+' • Owner: '+esc(c.owner||"—")+' • Next follow-up: '+esc(c.follow||"—")+' • Account score: '+done+'/'+checklist.length+'</div></div><button class="secondary" onclick="delCustomer('+c.id+')">Delete</button></div>'+checklist.map((x,i)=>'<div class="check"><div class="check-head"><input type="checkbox" '+(c.checks?.[i]?.done?'checked':'')+' onchange="updCheck('+c.id+','+i+',\'done\',this.checked)"><div><b>'+esc(x.q)+'</b><span class="badge">'+esc(x.cat)+'</span></div></div><details class="how"><summary>How to do it</summary><div style="margin-top:6px">'+esc(x.how)+'</div></details><div class="comment"><label>Comment / evidence</label><textarea onchange="updCheck('+c.id+','+i+',\'comment\',this.value)">'+esc(c.checks?.[i]?.comment||"")+'</textarea></div></div>').join("")+'</div>'}).join(""):'<div class="empty">No customers for this location.</div>'}
+function renderOpps(){let filter=(oppLocationFilter?.value||"").toLowerCase(),sort=oppSort?.value||"date";let rows=[...db.opportunities].filter(o=>(o.location||"").toLowerCase().includes(filter));rows.sort((a,b)=>sort==="location"?(a.location||"").localeCompare(b.location||""):sort==="customer"?(a.customer||"").localeCompare(b.customer||""):(a.date||"9999").localeCompare(b.date||"9999"));oppList.innerHTML=rows.length?'<table><tr><th>Customer</th><th>Location</th><th>Opportunity</th><th>Stage</th><th>Value</th><th>Next action</th><th>Owner</th><th></th></tr>'+rows.map(o=>'<tr><td>'+esc(o.customer)+'</td><td>'+esc(o.location||"—")+'</td><td>'+esc(o.title)+'</td><td>'+esc(o.stage)+'</td><td>'+esc(o.value)+'</td><td>'+esc(o.next)+'<div class="muted">'+esc(o.date)+'</div></td><td>'+esc(o.owner)+'</td><td><button class="secondary" onclick="remove(\'opportunities\','+o.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No opportunities for this location.</div>'}
+function renderIntel(){let filter=(intelLocationFilter?.value||"").toLowerCase();let rows=db.intel.filter(i=>(i.location||"").toLowerCase().includes(filter));intelList.innerHTML=rows.length?rows.map(i=>'<div class="card section"><b>'+esc(i.customer||"Customer not set")+'</b><span class="badge">'+esc(i.location||"Location not set")+'</span><p>'+esc(i.text)+'</p><div class="muted">Reported by '+esc(i.by||"—")+' • Contact: '+esc(i.person||"—")+' • Timing: '+esc(i.timing||"—")+'</div><div class="actions"><button class="secondary" onclick="remove(\'intel\','+i.id+')">Delete</button></div></div>').join(""):'<div class="empty">No field observations for this location.</div>'}
 function renderMarketing(){marketingList.innerHTML=db.marketing.length?'<table><tr><th>Idea</th><th>Audience</th><th>Status</th><th>Owner</th><th>Deadline</th><th>Why it matters</th><th></th></tr>'+db.marketing.map(m=>'<tr><td>'+esc(m.idea)+'</td><td>'+esc(m.audience)+'</td><td>'+esc(m.status)+'</td><td>'+esc(m.owner)+'</td><td>'+esc(m.date)+'</td><td>'+esc(m.why)+'</td><td><button class="secondary" onclick="remove(\'marketing\','+m.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No marketing ideas yet.</div>'}
-function render(){kCustomers.textContent=db.customers.length;kOpps.textContent=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage)).length;kIntel.textContent=db.intel.length;kMarketing.textContent=db.marketing.length;let items=db.opportunities.filter(x=>x.next||x.date).slice(0,5);focusList.innerHTML=items.length?items.map(x=>'<div style="padding:7px 0;border-bottom:1px solid #eee"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.next||x.title)+' <span class="muted">'+esc(x.date||"")+'</span></div>').join(""):"Add customers and actions to build your focus list.";renderCustomers();renderOpps();renderIntel();renderMarketing();renderHitlist()}
+function renderHitlist(){let filter=(hitlistLocationFilter?.value||"").toLowerCase(),sort=hitlistSort?.value||"priority",order={High:0,Medium:1,Low:2};let rows=[...db.hitlist].filter(h=>(h.location||"").toLowerCase().includes(filter));rows.sort((a,b)=>sort==="location"?(a.location||"").localeCompare(b.location||""):sort==="company"?(a.company||"").localeCompare(b.company||""):sort==="date"?(a.date||"9999").localeCompare(b.date||"9999"):(order[a.priority]??9)-(order[b.priority]??9));hitlistList.innerHTML=rows.length?'<table><tr><th>Account</th><th>Location</th><th>Priority</th><th>Relationship</th><th>Potential</th><th>Why</th><th>Next move</th><th>Follow-up</th><th>Owner</th><th></th></tr>'+rows.map(h=>'<tr><td><b>'+esc(h.company)+'</b></td><td>'+esc(h.location||"—")+'</td><td>'+esc(h.priority)+'</td><td>'+esc(h.relation)+'</td><td>'+esc(h.potential)+'</td><td>'+esc(h.reason)+'</td><td>'+esc(h.next)+'</td><td>'+esc(h.date)+'</td><td>'+esc(h.owner)+'</td><td><button class="secondary" onclick="remove(\'hitlist\','+h.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No hitlist accounts for this location.</div>'}
+
+function showDashboardList(type){
+let title="",html="";
+if(type==="customers"){title="Customers";html=db.customers.length?db.customers.map(x=>'<div class="dashboard-item"><b>'+esc(x.name)+'</b> <span class="badge">'+esc(x.location||"No location")+'</span><div class="muted">Owner: '+esc(x.owner||"—")+' • Follow-up: '+esc(x.follow||"—")+'</div></div>').join(""):'<div class="empty">No customers yet.</div>'}
+if(type==="opportunities"){title="Open opportunities";let rows=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage));html=rows.length?rows.map(x=>'<div class="dashboard-item"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.title)+' <span class="badge">'+esc(x.stage)+'</span><div class="muted">'+esc(x.location||"No location")+' • '+esc(x.next||"No next action")+' • '+esc(x.date||"No date")+'</div></div>').join(""):'<div class="empty">No open opportunities.</div>'}
+if(type==="intel"){title="Field intelligence";html=db.intel.length?db.intel.map(x=>'<div class="dashboard-item"><b>'+esc(x.customer||"Customer not set")+'</b> <span class="badge">'+esc(x.location||"No location")+'</span><div>'+esc(x.text)+'</div></div>').join(""):'<div class="empty">No field observations.</div>'}
+if(type==="marketing"){title="Marketing ideas";html=db.marketing.length?db.marketing.map(x=>'<div class="dashboard-item"><b>'+esc(x.idea)+'</b> <span class="badge">'+esc(x.status)+'</span><div class="muted">Owner: '+esc(x.owner||"—")+' • Deadline: '+esc(x.date||"—")+' • Audience: '+esc(x.audience||"—")+'</div></div>').join(""):'<div class="empty">No marketing ideas.</div>'}
+if(type==="hitlist"){title="Hitlist accounts";html=db.hitlist.length?db.hitlist.map(x=>'<div class="dashboard-item"><b>'+esc(x.company)+'</b> <span class="badge">'+esc(x.priority)+'</span><div class="muted">'+esc(x.location||"No location")+' • Next: '+esc(x.next||"—")+' • '+esc(x.date||"—")+'</div></div>').join(""):'<div class="empty">No hitlist accounts.</div>'}
+dashboardListTitle.textContent=title;dashboardList.innerHTML=html}
+function clearDashboardList(){dashboardListTitle.textContent="Selected items";dashboardList.innerHTML='<div class="empty">Click a dashboard card to show its list here.</div>'}
+function render(){kCustomers.textContent=db.customers.length;kOpps.textContent=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage)).length;kIntel.textContent=db.intel.length;kMarketing.textContent=db.marketing.length;kHitlist.textContent=db.hitlist.length;let items=db.opportunities.filter(x=>x.next||x.date).slice(0,5);focusList.innerHTML=items.length?items.map(x=>'<div class="dashboard-item"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.next||x.title)+' <span class="muted">'+esc(x.date||"")+'</span></div>').join(""):'Add actions to build your focus list.';renderCustomers();renderOpps();renderIntel();renderMarketing();renderHitlist()}
 render();
 </script>
 </body>
