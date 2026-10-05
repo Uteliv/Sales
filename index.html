@@ -34,6 +34,7 @@ table{width:100%;border-collapse:collapse;background:white;border:1px solid var(
 <button class="tab" data-view="opportunities">Opportunities</button>
 <button class="tab" data-view="intelligence">Field Intelligence</button>
 <button class="tab" data-view="marketing">Marketing</button>
+<button class="tab" data-view="hitlist">Hitlist</button>
 </nav>
 </header>
 <main>
@@ -114,6 +115,24 @@ table{width:100%;border-collapse:collapse;background:white;border:1px solid var(
 </div>
 <div class="section" id="marketingList"></div>
 </section>
+
+<section id="hitlist" class="view">
+<h2>Sales Hitlist</h2>
+<div class="card">
+<div class="row3">
+<div><label>Company / Account</label><input id="hCompany" placeholder="Customer or target account"></div>
+<div><label>Owner</label><input id="hOwner" placeholder="Responsible person"></div>
+<div><label>Priority</label><select id="hPriority"><option>High</option><option>Medium</option><option>Low</option></select></div>
+<div><label>Relationship status</label><select id="hRelation"><option>Strong</option><option>Known contact</option><option>Weak</option><option>No active contact</option></select></div>
+<div><label>Next follow-up</label><input id="hDate" type="date"></div>
+<div><label>Potential</label><input id="hPotential" placeholder="High / project / staffing / shutdown..."></div>
+</div>
+<div style="margin-top:12px"><label>Why is this account on the hitlist?</label><textarea id="hReason" placeholder="Why this account matters, what we know, and what opportunity we believe exists."></textarea></div>
+<div style="margin-top:12px"><label>Next move</label><input id="hNext" placeholder="Introduction, meeting, site visit, follow-up, proposal..."></div>
+<div class="actions"><button class="primary" onclick="addHitlist()">Add to hitlist</button></div>
+</div>
+<div class="section" id="hitlistList"></div>
+</section>
 </main>
 
 <script>
@@ -130,7 +149,7 @@ const checklist=[
 {cat:"Expansion",q:"Have we asked for a concrete next step?",how:"Turn useful information into an action: meeting, site walk, technical review, quote or introduction."}
 ];
 const DBKEY="projigo_sales_hub_v1";
-let db=JSON.parse(localStorage.getItem(DBKEY)||'{"customers":[],"opportunities":[],"intel":[],"marketing":[]}');
+let db=JSON.parse(localStorage.getItem(DBKEY)||'{"customers":[],"opportunities":[],"intel":[],"marketing":[],"hitlist":[]}'); if(!db.hitlist)db.hitlist=[];
 function save(){localStorage.setItem(DBKEY,JSON.stringify(db));render()}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab,.view").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.view).classList.add("active")});
 function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
@@ -140,12 +159,13 @@ function delCustomer(id){db.customers=db.customers.filter(x=>x.id!==id);save()}
 function addOpportunity(){if(!oTitle.value.trim())return;db.opportunities.push({id:Date.now(),customer:oCustomer.value,title:oTitle.value,value:oValue.value,stage:oStage.value,owner:oOwner.value,date:oDate.value,next:oNext.value});["oCustomer","oTitle","oValue","oOwner","oDate","oNext"].forEach(id=>document.getElementById(id).value="");save()}
 function addIntel(){if(!iText.value.trim())return;db.intel.push({id:Date.now(),customer:iCustomer.value,by:iBy.value,text:iText.value,person:iPerson.value,timing:iTiming.value});["iCustomer","iBy","iText","iPerson","iTiming"].forEach(id=>document.getElementById(id).value="");save()}
 function addMarketing(){if(!mIdea.value.trim())return;db.marketing.push({id:Date.now(),idea:mIdea.value,audience:mAudience.value,owner:mOwner.value,status:mStatus.value,date:mDate.value,why:mWhy.value});["mIdea","mAudience","mOwner","mDate","mWhy"].forEach(id=>document.getElementById(id).value="");save()}
+function addHitlist(){if(!hCompany.value.trim())return;db.hitlist.push({id:Date.now(),company:hCompany.value,owner:hOwner.value,priority:hPriority.value,relation:hRelation.value,date:hDate.value,potential:hPotential.value,reason:hReason.value,next:hNext.value});["hCompany","hOwner","hDate","hPotential","hReason","hNext"].forEach(id=>document.getElementById(id).value="");save()}
 function remove(type,id){db[type]=db[type].filter(x=>x.id!==id);save()}
 function renderCustomers(){customerList.innerHTML=db.customers.length?db.customers.map(c=>{let done=checklist.filter((_,i)=>c.checks[i]?.done).length;return '<div class="card section"><div style="display:flex;justify-content:space-between;gap:10px"><div><h3>'+esc(c.name)+'</h3><div class="muted">Owner: '+esc(c.owner||"—")+' • Next follow-up: '+esc(c.follow||"—")+' • Account score: '+done+'/'+checklist.length+'</div></div><button class="secondary" onclick="delCustomer('+c.id+')">Delete</button></div>'+checklist.map((x,i)=>'<div class="check"><div class="check-head"><input type="checkbox" '+(c.checks[i]?.done?'checked':'')+' onchange="updCheck('+c.id+','+i+',\'done\',this.checked)"><div><b>'+esc(x.q)+'</b><div class="badge">'+esc(x.cat)+'</div></div></div><details class="how"><summary>How to do it</summary><div style="margin-top:6px">'+esc(x.how)+'</div></details><div class="comment"><label>Comment / evidence</label><textarea onchange="updCheck('+c.id+','+i+',\'comment\',this.value)" placeholder="What did you learn?">'+esc(c.checks[i]?.comment||"")+'</textarea></div></div>').join("")+'</div>'}).join(""):'<div class="empty">No customers yet.</div>'}
 function renderOpps(){oppList.innerHTML=db.opportunities.length?'<table><tr><th>Customer</th><th>Opportunity</th><th>Stage</th><th>Value</th><th>Next action</th><th>Owner</th><th></th></tr>'+db.opportunities.map(o=>'<tr><td>'+esc(o.customer)+'</td><td>'+esc(o.title)+'</td><td>'+esc(o.stage)+'</td><td>'+esc(o.value)+'</td><td>'+esc(o.next)+'<div class="muted">'+esc(o.date)+'</div></td><td>'+esc(o.owner)+'</td><td><button class="secondary" onclick="remove(\'opportunities\','+o.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No opportunities yet.</div>'}
 function renderIntel(){intelList.innerHTML=db.intel.length?db.intel.map(i=>'<div class="card section"><b>'+esc(i.customer||"Customer not set")+'</b><p>'+esc(i.text)+'</p><div class="muted">Reported by '+esc(i.by||"—")+' • Contact: '+esc(i.person||"—")+' • Timing: '+esc(i.timing||"—")+'</div><div class="actions"><button class="secondary" onclick="remove(\'intel\','+i.id+')">Delete</button></div></div>').join(""):'<div class="empty">No field observations yet.</div>'}
 function renderMarketing(){marketingList.innerHTML=db.marketing.length?'<table><tr><th>Idea</th><th>Audience</th><th>Status</th><th>Owner</th><th>Deadline</th><th>Why it matters</th><th></th></tr>'+db.marketing.map(m=>'<tr><td>'+esc(m.idea)+'</td><td>'+esc(m.audience)+'</td><td>'+esc(m.status)+'</td><td>'+esc(m.owner)+'</td><td>'+esc(m.date)+'</td><td>'+esc(m.why)+'</td><td><button class="secondary" onclick="remove(\'marketing\','+m.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No marketing ideas yet.</div>'}
-function render(){kCustomers.textContent=db.customers.length;kOpps.textContent=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage)).length;kIntel.textContent=db.intel.length;kMarketing.textContent=db.marketing.length;let items=db.opportunities.filter(x=>x.next||x.date).slice(0,5);focusList.innerHTML=items.length?items.map(x=>'<div style="padding:7px 0;border-bottom:1px solid #eee"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.next||x.title)+' <span class="muted">'+esc(x.date||"")+'</span></div>').join(""):"Add customers and actions to build your focus list.";renderCustomers();renderOpps();renderIntel();renderMarketing()}
+function render(){kCustomers.textContent=db.customers.length;kOpps.textContent=db.opportunities.filter(x=>!["Won","Lost"].includes(x.stage)).length;kIntel.textContent=db.intel.length;kMarketing.textContent=db.marketing.length;let items=db.opportunities.filter(x=>x.next||x.date).slice(0,5);focusList.innerHTML=items.length?items.map(x=>'<div style="padding:7px 0;border-bottom:1px solid #eee"><b>'+esc(x.customer||x.title)+'</b> — '+esc(x.next||x.title)+' <span class="muted">'+esc(x.date||"")+'</span></div>').join(""):"Add customers and actions to build your focus list.";renderCustomers();renderOpps();renderIntel();renderMarketing();renderHitlist()}
 render();
 </script>
 </body>
