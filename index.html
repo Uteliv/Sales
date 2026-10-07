@@ -274,11 +274,10 @@ function removeHitlistContact(id,cid){
 }
 function remove(type,id){db[type]=db[type].filter(x=>x.id!==id);save()}
 
-function toggleCustomerDetails(id,btn){
+function toggleCustomerDetails(id){
   const el=document.getElementById("customer-details-"+id); if(!el)return;
   const open=el.style.display==="none"||!el.style.display;
   el.style.display=open?"block":"none";
-  if(btn)btn.textContent=open?"−":"+";
 }
 function renderCustomers(){
 let filter=(customerLocationFilter?.value||"").toLowerCase(),sort=customerSort?.value||"name";
@@ -290,7 +289,7 @@ customerList.innerHTML=rows.length?rows.map(c=>{
   let people=c.keyPersons.length?c.keyPersons.map(p=>'<div class="dashboard-item"><b>'+esc(p.name)+'</b> — '+esc(p.role||"Role not set")+'<div class="muted">'+(p.email?'Email: '+esc(p.email):'')+(p.email&&p.phone?' • ':'')+(p.phone?'Phone: '+esc(p.phone):(!p.email&&p.contact?'Contact: '+esc(p.contact):''))+'</div><button class="secondary" style="float:right;padding:4px 8px" onclick="removeKeyPerson('+c.id+','+p.id+')">×</button></div>').join(""):'<div class="muted">No key persons added yet.</div>';
   return '<div class="card section" id="customer-'+c.id+'">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">'+
-      '<button class="secondary" style="flex:1;text-align:left;font-weight:700;font-size:16px" onclick="toggleCustomerDetails('+c.id+',this)">'+esc(c.name)+'</button>'+
+      '<button class="secondary" style="flex:1;text-align:left;font-weight:700;font-size:16px" onclick="toggleCustomerDetails('+c.id+')">'+esc(c.name)+'</button>'+
       '<button class="secondary" onclick="delCustomer('+c.id+')">Delete</button>'+
     '</div>'+
     '<div id="customer-details-'+c.id+'" style="display:none;margin-top:14px">'+
@@ -300,7 +299,7 @@ customerList.innerHTML=rows.length?rows.map(c=>{
     '</div>'+
   '</div>'
 }).join(""):'<div class="empty">No customers for this location.</div>'}
-function renderOpps(){let filter=(oppLocationFilter?.value||"").toLowerCase(),sort=oppSort?.value||"date";let rows=[...db.opportunities].filter(o=>(o.location||"").toLowerCase().includes(filter));rows.sort((a,b)=>sort==="location"?(a.location||"").localeCompare(b.location||""):sort==="customer"?(a.customer||"").localeCompare(b.customer||""):(a.date||"9999").localeCompare(b.date||"9999"));oppList.innerHTML=rows.length?'<table><tr><th>Customer</th><th>Location</th><th>Opportunity</th><th>Category</th><th>Status</th><th>Hours</th><th>Expected start</th><th>Next action</th><th>Owner</th><th></th></tr>'+rows.map(o=>'<tr><td>'+esc(o.customer)+'</td><td>'+esc(o.location||"—")+'</td><td>'+esc(o.title)+'</td><td>'+esc(o.stage)+'</td><td>'+esc(o.value)+'</td><td>'+esc(o.next)+'<div class="muted">'+esc(o.date)+'</div></td><td>'+esc(o.owner)+'</td><td><button class="secondary" onclick="remove(\'opportunities\','+o.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No opportunities for this location.</div>'}
+function renderOpps(){let filter=(oppLocationFilter?.value||"").toLowerCase(),sort=oppSort?.value||"date";let rows=[...db.opportunities].filter(o=>o.stage!=="Closed"&&(o.location||"").toLowerCase().includes(filter));rows.sort((a,b)=>sort==="location"?(a.location||"").localeCompare(b.location||""):sort==="customer"?(a.customer||"").localeCompare(b.customer||""):(a.date||"9999").localeCompare(b.date||"9999"));oppList.innerHTML=rows.length?'<table><tr><th>Customer</th><th>Location</th><th>Opportunity</th><th>Category</th><th>Status</th><th>Hours</th><th>Expected start</th><th>Next action</th><th>Owner</th><th></th></tr>'+rows.map(o=>'<tr><td>'+esc(o.customer)+'</td><td>'+esc(o.location||"—")+'</td><td>'+esc(o.title)+'</td><td>'+esc(o.stage)+'</td><td>'+esc(o.value)+'</td><td>'+esc(o.next)+'<div class="muted">'+esc(o.date)+'</div></td><td>'+esc(o.owner)+'</td><td><button class="secondary" onclick="remove(\'opportunities\','+o.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No opportunities for this location.</div>'}
 function renderMarketing(){marketingList.innerHTML=db.marketing.length?'<table><tr><th>Idea</th><th>Audience</th><th>Status</th><th>Owner</th><th>Deadline</th><th>Why it matters</th><th></th></tr>'+db.marketing.map(m=>'<tr><td>'+esc(m.idea)+'</td><td>'+esc(m.audience)+'</td><td>'+esc(m.status)+'</td><td>'+esc(m.owner)+'</td><td>'+esc(m.date)+'</td><td>'+esc(m.why)+'</td><td><button class="secondary" onclick="remove(\'marketing\','+m.id+')">×</button></td></tr>').join("")+'</table>':'<div class="empty">No marketing ideas yet.</div>'}
 function renderHitlist(){
   let filter=(hitlistLocationFilter?.value||"").toLowerCase();
